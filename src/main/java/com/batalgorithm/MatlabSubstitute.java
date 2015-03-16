@@ -30,6 +30,10 @@ public class MatlabSubstitute {
     /**
      * Функция [Y, I] = min(X) кроме самих минимальных элементов возвращает вектор-строку индексов этих элементов в
      * данном столбце.
+     *
+     * @param matrix - входная матрица
+     * @return Матрица, в первой строке который минимальные элементы в каждом из столбцов, а во второй - индексы этих
+     * элементов.
      */
     public static Matrix min(Matrix matrix) {
         int rowDimension = matrix.getRowDimension();
@@ -162,9 +166,9 @@ public class MatlabSubstitute {
     /**
      * Возводит все элементы матрицы в заданную степень.
      *
-     * @param matrix
-     * @param pow
-     * @return
+     * @param matrix - входная матрица
+     * @param pow    - степень
+     * @return Результирующая матрица.
      */
     public static Matrix pow(Matrix matrix, double pow) {
         int rowDimension = matrix.getRowDimension();
@@ -181,8 +185,8 @@ public class MatlabSubstitute {
     /**
      * Суммирует все элементы заданной матрицы.
      *
-     * @param matrix
-     * @return
+     * @param matrix - входная матрица
+     * @return Сумма элементов матрицы.
      */
     public static double sum(Matrix matrix) {
         double sum = 0;
@@ -194,16 +198,26 @@ public class MatlabSubstitute {
         return sum;
     }
 
-    /*
-    Функция rand без аргументов формирует одно случайное число,
-     подчиняющееся равномерному закону распределения в интервале (0, 1), которое изменяется при каждом последующем вызове.
+    /**
+     * формирует одно случайное число, подчиняющееся равномерному закону распределения в интервале (0, 1), которое
+     * изменяется при каждом последующем вызове.
+     *
+     * @return Случайное число.
      */
     public static double rand() {
         Random random = new Random();
         return random.nextDouble();
     }
 
-    // Сравнивает элементы матриц поочереди и если условие выпоняется возвращает 1 в результирующие мтарице, иначе - 0
+    /**
+     * Сравнивает элементы входной матрицы и матрицы границ поочереди и если условие (элемент матрицы для сравнения
+     * меньше, чем соответсвующий элемент из матрицы границ) выпоняется возвращает 1 в
+     * соответсвующей позиции результирующей матрице, иначе - 0.
+     *
+     * @param matrix - входная матрица (к сравнению)
+     * @param bound  - матрица границ
+     * @return Результирующая матрица сравнений.
+     */
     public static Matrix isLowerThan(Matrix matrix, Matrix bound) {
         int mColumnDimension = matrix.getColumnDimension();
         int mRowDimension = matrix.getRowDimension();
@@ -228,6 +242,15 @@ public class MatlabSubstitute {
         }
     }
 
+    /**
+     * Сравнивает элементы входной матрицы и матрицы границ поочереди и если условие (элемент матрицы для сравнения
+     * больше, чем соответсвующий элемент из матрицы границ) выпоняется, то возвращает 1 в
+     * соответсвующей позиции результирующей матрице, иначе - 0.
+     *
+     * @param matrix - входная матрица (к сравнению)
+     * @param bound  - матрица границ
+     * @return Результирующая матрица сравнений.
+     */
     public static Matrix isGreaterThan(Matrix matrix, Matrix bound) {
         int mColumnDimension = matrix.getColumnDimension();
         int mRowDimension = matrix.getRowDimension();
