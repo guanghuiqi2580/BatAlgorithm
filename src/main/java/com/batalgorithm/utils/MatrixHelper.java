@@ -1,9 +1,21 @@
-package com.batalgorithm;
+package com.batalgorithm.utils;
 
 import Jama.Matrix;
+import com.batalgorithm.main.Element;
 
+import java.util.List;
+
+/**
+ * Предназначен для упрощения работы с матрицами.
+ */
 public class MatrixHelper {
 
+    /**
+     * Вывод элементов матрицы в форматированную строку.
+     *
+     * @param matrix - входная матрица
+     * @return Строка, содержащая в отформатированном виде элементы матрицы.
+     */
     public static String toString(Matrix matrix) {
         StringBuilder result = new StringBuilder();
         result.append(System.lineSeparator());
@@ -19,6 +31,13 @@ public class MatrixHelper {
         return result.toString();
     }
 
+    /**
+     * Возвращает строку с заданным номером из входной матрицы.
+     *
+     * @param matrix    - входная матрица
+     * @param rowNumber - номер строки
+     * @return Матрица, содержащая заданную строку.
+     */
     public static Matrix getRow(Matrix matrix, int rowNumber) {
         int rowDimension = matrix.getRowDimension();
         if (rowDimension > rowNumber) {
@@ -34,6 +53,13 @@ public class MatrixHelper {
         }
     }
 
+    /**
+     * Возращает столбец из входной матрицы с заданным номером.
+     *
+     * @param matrix    - входная матрица
+     * @param colNumber - номер столбца
+     * @return Матрица, содержащая элемента заданного столбца входной матрицы.
+     */
     public static Matrix getCol(Matrix matrix, int colNumber) {
         int columnDimension = matrix.getColumnDimension();
         if (columnDimension > colNumber) {
@@ -49,6 +75,13 @@ public class MatrixHelper {
         }
     }
 
+    /**
+     * Задает строку в матрице заданными элементами.
+     *
+     * @param matrix    - входная матрица
+     * @param row       - строка, содержащая элементы, которые будут добавлены во входную матрицу
+     * @param rowNumber - номер строки
+     */
     public static void setRow(Matrix matrix, Matrix row, int rowNumber) {
         int rowDimension = matrix.getRowDimension();
         if (rowDimension > rowNumber) {
@@ -62,6 +95,13 @@ public class MatrixHelper {
         }
     }
 
+    /**
+     * Задает столбец в матрице заданными элементами.
+     *
+     * @param matrix    - входная матрица
+     * @param col       - столбец, содержащий элементы, которые будут добавлены во входную матрицу
+     * @param colNumber - номер столбца
+     */
     public static void setCol(Matrix matrix, Matrix col, int colNumber) {
         int columnDimension = matrix.getColumnDimension();
         if (columnDimension > colNumber) {
@@ -75,6 +115,13 @@ public class MatrixHelper {
         }
     }
 
+    /**
+     * Проверяет на равенство две матрицы.
+     *
+     * @param m1 - первая матрица
+     * @param m2 - вторая матрица
+     * @return True если матрицы равны, иначе False.
+     */
     public static boolean isEquals(Matrix m1, Matrix m2) {
         int m1RowDimension = m1.getRowDimension();
         int m2RowDimension = m2.getRowDimension();
@@ -99,6 +146,13 @@ public class MatrixHelper {
         return false;
     }
 
+    /**
+     * Задает значение для всех элементов в строке.
+     *
+     * @param matrix    - входная матрица
+     * @param rowNumber - номре строки
+     * @param value     - значение
+     */
     public static void setForAllInRow(Matrix matrix, int rowNumber, double value) {
         int rowDimension = matrix.getRowDimension();
         if (rowNumber < rowDimension) {
@@ -106,7 +160,22 @@ public class MatrixHelper {
                 matrix.set(rowNumber, c, value);
             }
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Row number is greater than matrix size");
         }
+    }
+
+    /**
+     * Формирует строку, содержащую заданные элементы.
+     *
+     * @param elementList - список элементов
+     * @return ФОрматированная строка со значениями элементов.
+     */
+    public static String toString(List<Element> elementList) {
+        StringBuilder result = new StringBuilder();
+        for (Element e : elementList) {
+            result.append(e.getHeight()).append(", ").append(e.getWidth());
+            result.append(System.lineSeparator());
+        }
+        return result.toString();
     }
 }

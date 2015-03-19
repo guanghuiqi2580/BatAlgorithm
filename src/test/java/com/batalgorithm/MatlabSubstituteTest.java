@@ -1,6 +1,7 @@
 package com.batalgorithm;
 
 import Jama.Matrix;
+import com.batalgorithm.utils.MatlabSubstitute;
 import junit.framework.TestCase;
 import org.junit.Assert;
 

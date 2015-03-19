@@ -1,10 +1,14 @@
-package com.batalgorithm;
+package com.batalgorithm.utils;
 
 import Jama.Matrix;
 
 import java.util.Date;
 import java.util.Random;
 
+/**
+ * Преднанаяен для работы с математическими операциями. Большая часть методов являются аналогами подобных операций в
+ * среде Matlab.
+ */
 public class MatlabSubstitute {
 
     /**
@@ -76,31 +80,6 @@ public class MatlabSubstitute {
         }
         MatrixHelper.setRow(result, minValue, 0);
         MatrixHelper.setRow(result, minValueIndex, 1);
-        return result;
-    }
-
-    /**
-     * Целевая функция: свою собственную целевую функцию следует записать здесь.
-     * Когда вы используете собственную функцию, пожалуйста, не забудьте изменить
-     * пределы/границы Lb и Ub и количество измерений D.
-     * Сейчас это сферическая функция с fmin = 0 на наборе (0,0,...,0).
-     *
-     * @param matrix - входная матрица
-     * @return Вектор-строка, содержащая суммы элементов каждого столбца.
-     */
-    public static Matrix Fun(Matrix matrix) {
-        int rowDimension = matrix.getRowDimension();
-        int columnDimension = matrix.getColumnDimension();
-
-        Matrix result = new Matrix(matrix.getRowDimension(), matrix.getColumnDimension());
-        double sum = 0;
-        for (int r = 0; r < rowDimension; r++) {
-            for (int c = 0; c < columnDimension; c++) {
-                sum += Math.pow(matrix.get(r, c), 2);
-            }
-            result.set(r, 0, sum);
-            sum = 0;
-        }
         return result;
     }
 
@@ -273,5 +252,14 @@ public class MatlabSubstitute {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    /**
+     * Предназначен для генерации случайного знака для выражения.
+     *
+     * @return Возращает -1 или 1 с равной вероятностью.
+     */
+    public static int getRandomSign() {
+        return (Math.random() > 0.5) ? -1 : 1;
     }
 }
