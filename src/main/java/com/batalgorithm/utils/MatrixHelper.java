@@ -172,8 +172,9 @@ public class MatrixHelper {
      */
     public static String toString(List<Element> elementList) {
         StringBuilder result = new StringBuilder();
+        result.append(System.lineSeparator());
         for (Element e : elementList) {
-            result.append(e.getHeight()).append(", ").append(e.getWidth());
+            result.append(e.getX()).append(", ").append(e.getY());
             result.append(System.lineSeparator());
         }
         return result.toString();

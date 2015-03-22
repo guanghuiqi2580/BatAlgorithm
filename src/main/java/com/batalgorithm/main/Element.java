@@ -40,4 +40,12 @@ public class Element extends Rectangle {
     public void setY(int y) {
         this.y = y;
     }
+
+    public void setCenterY(int centerY) {
+        this.y = centerY - height / 2;
+    }
+
+    public void setCenterX(int centerX) {
+        this.x = centerX - width / 2;
+    }
 }

@@ -1,4 +1,6 @@
-package com.batalgorithm.main;
+package com.batalgorithm.utils;
+
+import com.batalgorithm.main.Element;
 
 import java.util.Comparator;
 

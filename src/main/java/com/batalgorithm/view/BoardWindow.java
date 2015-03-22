@@ -1,4 +1,8 @@
-package com.batalgorithm.main;
+package com.batalgorithm.view;
+
+import com.batalgorithm.main.CircuitBoard;
+import com.batalgorithm.main.Element;
+import com.batalgorithm.main.RestrictedArea;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +14,7 @@ import java.awt.event.ActionListener;
  */
 public class BoardWindow extends JFrame {
 
-    private static int ZOOM = 5;
+    private static int ZOOM = 3;
     private static Label zoomLabel;
     private int width;
     private int height;
@@ -106,6 +110,8 @@ public class BoardWindow extends JFrame {
                         (int) e
                                 .getCenterX(), ZOOM * (int) (e.getCenterY()));
             }
+
+            //TODO Сначала отривовать все элементы, а потом подписи к ним, чтобы элементы не перекрывали подписи.
         }
     }
 }

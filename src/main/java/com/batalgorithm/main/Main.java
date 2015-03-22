@@ -4,6 +4,7 @@ import Jama.Matrix;
 import com.batalgorithm.utils.InputHelper;
 import com.batalgorithm.utils.MatrixHelper;
 import com.batalgorithm.utils.PrintHelper;
+import com.batalgorithm.view.BoardWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class Main {
             for (int j = i + 1; j < adjMatrixSize; j++) {
                 if (i != j) {
                     System.out.print("Value at " + "[" + i + "]" + "[" + j + "]: ");
-                    int currValue = InputHelper.inputPositiveInt();
+                    int currValue = InputHelper.inputPositiveIntOrZero();
                     adjMatrix.set(i, j, currValue);
                     adjMatrix.set(j, i, currValue);
                 } else {
@@ -78,43 +79,42 @@ public class Main {
         System.out.println("Minimum distance between the elements: " + minDistance);
         System.out.println(PrintHelper.getDelimiter());
 
+        System.out.println(PrintHelper.getDelimiter());
+        System.out.println("Input algorithm parameters: ");
+        System.out.print("Input bat population size (~10-40): ");
+        int n = InputHelper.inputPositiveInt();
+        System.out.print("Input bat generations (~1000-5000): ");
+        int N_gen = InputHelper.inputPositiveInt();
+        System.out.println("Input volume (0 < volume < 1): ");
+        double A = InputHelper.inputPositiveDouble();
+        System.out.println("Input rate (0 < rate < 1): ");
+        double r = InputHelper.inputPositiveDouble();
+        System.out.print("Input minimum frequency: ");
+        int Qmin = InputHelper.inputPositiveIntOrZero();
+        System.out.print("Input maximum frequency: ");
+        int Qmax = InputHelper.inputPositiveInt();
+        System.out.print("Input max searching step: ");
+        int maxStep = InputHelper.inputPositiveInt();
+
+        System.out.println(PrintHelper.getDelimiter());
+
+
         CircuitBoard circuitBoard = new CircuitBoard(circuitBoardA, circuitBoardB);
         RestrictedArea restrictedArea = new RestrictedArea(restrictedAreaX, restrictedAreaY,
                 restrictedAreaA, restrictedAreaB);
-
         BatAlgorithm batAlgorithm = new BatAlgorithm(circuitBoard, restrictedArea, adjMatrix,
                 elementList, minDistance);
+        batAlgorithm.calculate(n, N_gen, A, r, Qmin, Qmax, maxStep);
+        List<Element> bestElementPlaced = batAlgorithm.getBest();
 
-        batAlgorithm.calculate();
+        System.out.println(PrintHelper.getDelimiter());
+        System.out.println("Solution information: ");
+        System.out.println("The number of function evaluation: " + batAlgorithm.getIter());
+        System.out.println("Best found coordinates for elements: [x,y] = " + MatrixHelper.toString
+                (bestElementPlaced));
+        System.out.println("Minimum found L(G): " + batAlgorithm.getMinLength());
+        System.out.println(PrintHelper.getDelimiter());
 
-        Matrix bestX = batAlgorithm.getBestX();
-        Matrix bestY = batAlgorithm.getBestY();
-        for (int r = 0; r < bestX.getRowDimension(); r++) {
-            for (int c = 0; c < bestX.getColumnDimension(); c++) {
-                Element element = elementList.get(c);
-                element.setX((int) bestX.get(r, c));
-                element.setY((int) bestY.get(r, c));
-            }
-        }
-        new BoardWindow(circuitBoard, restrictedArea, elementList);
-
-
-
-//        int n_iter = batAlgorithm.getN_iter();
-//        Matrix best = batAlgorithm.getBest();
-//        Matrix fmin = batAlgorithm.getFmin();
-
-
-//        Matrix resultStub = new Matrix(2, adjMatrixSize);
-//        for (int i = 0; i < adjMatrixSize; i++) {
-//            resultStub.set(0, i, (int) (Math.random() * circuitBoardB));
-//            resultStub.set(1, i, (int) (Math.random() * circuitBoardA));
-//        }
-//
-//        double L_G = Math.random() * (circuitBoardA + circuitBoardB) * 10;
-//
-//        System.out.println("Solution information: ");
-//        System.out.println("Best found coordinates for elements: " + MatrixHelper.toString(resultStub));
-//        System.out.println("Minimum found L(G) = " + (int) L_G);
+        new BoardWindow(circuitBoard, restrictedArea, bestElementPlaced);
     }
 }

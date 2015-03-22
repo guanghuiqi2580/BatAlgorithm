@@ -38,6 +38,28 @@ public class InputHelper {
     }
 
     /**
+     * Читает следующее положительное целое число или ноль.
+     *
+     * @return Положительное целое число или ноль, введенное пользователем.
+     */
+    public static int inputPositiveIntOrZero() {
+        do {
+            if (scanner.hasNextInt()) {
+                int currInt = scanner.nextInt();
+                if (0 <= currInt) {
+                    return currInt;
+                } else {
+                    System.out.println(INPUT_POSITIVE_INT_ERROR);
+                    scanner.next();
+                }
+            } else {
+                System.out.println(INPUT_POSITIVE_INT_ERROR);
+                scanner.next();
+            }
+        } while (true);
+    }
+
+    /**
      * Читает следующее положительное вещественное число.
      *
      * @return Положительное вещественное число, введенное пользователем.
