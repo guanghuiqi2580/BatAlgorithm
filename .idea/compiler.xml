@@ -25,5 +25,8 @@
         <module name="BatAlgorithm" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="BatAlgorithm" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

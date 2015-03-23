@@ -69,13 +69,13 @@ public class Main {
         int minDistance = InputHelper.inputPositiveInt();
 
         System.out.println(PrintHelper.getDelimiter());
-        System.out.println("Input information: ");
+        System.out.println("Base information: ");
         System.out.println("Circuit board size: A = " + circuitBoardA + ", B = " + circuitBoardB);
         System.out.println("Coordinates of the restricted area center: X = " + restrictedAreaX + ", Y = "
                 + restrictedAreaY);
         System.out.println("Size of the restricted area: C = " + restrictedAreaA + ", D = " + restrictedAreaB);
         System.out.println("Adjacency matrix: " + MatrixHelper.toString(adjMatrix));
-        System.out.println("Elements size: [a, b] = " + MatrixHelper.toString(elementList));
+        System.out.println("Elements size: [a, b] = " + MatrixHelper.sizeToString(elementList));
         System.out.println("Minimum distance between the elements: " + minDistance);
         System.out.println(PrintHelper.getDelimiter());
 
@@ -85,19 +85,28 @@ public class Main {
         int n = InputHelper.inputPositiveInt();
         System.out.print("Input bat generations (~1000-5000): ");
         int N_gen = InputHelper.inputPositiveInt();
-        System.out.println("Input volume (0 < volume < 1): ");
-        double A = InputHelper.inputPositiveDouble();
-        System.out.println("Input rate (0 < rate < 1): ");
-        double r = InputHelper.inputPositiveDouble();
+        System.out.print("Input volume (0 < volume < 1): ");
+        double A = InputHelper.inputPositiveDoubleFromZeroToOne();
+        System.out.print("Input rate (0 < rate < 1): ");
+        double r = InputHelper.inputPositiveDoubleFromZeroToOne();
         System.out.print("Input minimum frequency: ");
         int Qmin = InputHelper.inputPositiveIntOrZero();
         System.out.print("Input maximum frequency: ");
-        int Qmax = InputHelper.inputPositiveInt();
-        System.out.print("Input max searching step: ");
+        int Qmax = InputHelper.inputPositiveIntOrZero();
+        System.out.print("Input maximum searching step: ");
         int maxStep = InputHelper.inputPositiveInt();
-
         System.out.println(PrintHelper.getDelimiter());
 
+        System.out.println(PrintHelper.getDelimiter());
+        System.out.println("Algorithm parameters: ");
+        System.out.println("Bat population size (~10-40): " + n);
+        System.out.println("Bat generations (~1000-5000): " + N_gen);
+        System.out.println("Volume: " + A);
+        System.out.println("Rate: " + r);
+        System.out.println("Minimum frequency: " + Qmin);
+        System.out.println("Maximum frequency: " + Qmax);
+        System.out.println("Maximum searching step: " + maxStep);
+        System.out.println(PrintHelper.getDelimiter());
 
         CircuitBoard circuitBoard = new CircuitBoard(circuitBoardA, circuitBoardB);
         RestrictedArea restrictedArea = new RestrictedArea(restrictedAreaX, restrictedAreaY,
@@ -110,9 +119,10 @@ public class Main {
         System.out.println(PrintHelper.getDelimiter());
         System.out.println("Solution information: ");
         System.out.println("The number of function evaluation: " + batAlgorithm.getIter());
-        System.out.println("Best found coordinates for elements: [x,y] = " + MatrixHelper.toString
+        System.out.println("Best found coordinates for elements: [x,y] = " + MatrixHelper.coordinatesToString
                 (bestElementPlaced));
         System.out.println("Minimum found L(G): " + batAlgorithm.getMinLength());
+        System.out.println("Drawing the scheme in the separate window...");
         System.out.println(PrintHelper.getDelimiter());
 
         new BoardWindow(circuitBoard, restrictedArea, bestElementPlaced);

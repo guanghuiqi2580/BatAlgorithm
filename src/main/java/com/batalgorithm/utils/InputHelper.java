@@ -13,6 +13,9 @@ public class InputHelper {
     private static final String INPUT_POSITIVE_DOUBLE_ERROR = "Input error! Expected number from 0 to " + Double
             .MAX_VALUE + ". Try again.";
 
+    private static final String INPUT_POSITIVE_DOUBLE_FROM_ZERO_TO_ONE_ERROR = "Input error! Expected number from 0 " +
+            "to 1. Try again.";
+
     private static final Scanner scanner = new Scanner(System.in);
 
     /**
@@ -76,6 +79,28 @@ public class InputHelper {
                 }
             } else {
                 System.out.println(INPUT_POSITIVE_DOUBLE_ERROR);
+                scanner.next();
+            }
+        } while (true);
+    }
+
+    /**
+     * Читает следующее положительное вещественное число в дипазоне (0, 1).
+     *
+     * @return Положительное вещественное число, введенное пользователем.
+     */
+    public static double inputPositiveDoubleFromZeroToOne() {
+        do {
+            if (scanner.hasNextDouble()) {
+                double currInt = scanner.nextDouble();
+                if (0 < currInt && currInt < 1) {
+                    return currInt;
+                } else {
+                    System.out.println(INPUT_POSITIVE_DOUBLE_FROM_ZERO_TO_ONE_ERROR);
+                    scanner.next();
+                }
+            } else {
+                System.out.println(INPUT_POSITIVE_DOUBLE_FROM_ZERO_TO_ONE_ERROR);
                 scanner.next();
             }
         } while (true);

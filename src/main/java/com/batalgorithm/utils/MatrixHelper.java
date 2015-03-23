@@ -165,16 +165,32 @@ public class MatrixHelper {
     }
 
     /**
-     * Формирует строку, содержащую заданные элементы.
+     * Формирует строку, содержащую координаты заданных элементы.
      *
      * @param elementList - список элементов
-     * @return ФОрматированная строка со значениями элементов.
+     * @return Форматированная строка со значениями координат элементов.
      */
-    public static String toString(List<Element> elementList) {
+    public static String coordinatesToString(List<Element> elementList) {
         StringBuilder result = new StringBuilder();
         result.append(System.lineSeparator());
         for (Element e : elementList) {
             result.append(e.getX()).append(", ").append(e.getY());
+            result.append(System.lineSeparator());
+        }
+        return result.toString();
+    }
+
+    /**
+     * Формирует строку, содержащую размеры заданных элементов.
+     *
+     * @param elementList - список элементов
+     * @return Форматированная строка со значениями размеров элементов.
+     */
+    public static String sizeToString(List<Element> elementList) {
+        StringBuilder result = new StringBuilder();
+        result.append(System.lineSeparator());
+        for (Element e : elementList) {
+            result.append(e.getWidth()).append(", ").append(e.getHeight());
             result.append(System.lineSeparator());
         }
         return result.toString();
