@@ -71,7 +71,7 @@ public class Rectangle {
 
     public boolean intersects(Rectangle rectangle, int distance) {
         Rectangle safeZone = new Rectangle(this.getCenterX(), this.getCenterY(), this.getWidth() + distance * 2,
-                this.getHeight() + distance * 2);
+                this.getHeight()+ distance * 2);
         java.awt.Rectangle safeZoneAwt = new java.awt.Rectangle(safeZone.getMinX(), safeZone.getMinY(),
                 safeZone.getWidth(), safeZone.getHeight());
         java.awt.Rectangle rectangleAwt = new java.awt.Rectangle(rectangle.getMinX(), rectangle.getMinY(),

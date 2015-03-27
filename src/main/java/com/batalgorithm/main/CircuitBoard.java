@@ -6,4 +6,8 @@ public class CircuitBoard extends Rectangle {
         super(centerX, centerY, width, height);
     }
 
+    public CircuitBoard(int width, int height) {
+        super(width / 2, height / 2, width, height);
+    }
+
 }

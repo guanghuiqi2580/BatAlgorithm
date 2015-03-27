@@ -89,8 +89,6 @@ public class BoardWindow extends JFrame {
             g.fillRect(startX, startY, ZOOM * restrictedArea.getWidth(), ZOOM * restrictedArea.getHeight());
             g.setColor(Color.BLACK);
             g.drawRect(startX, startY, ZOOM * restrictedArea.getWidth(), ZOOM * restrictedArea.getHeight());
-            g.drawString("x=" + restrictedArea.getMinX() + ", y=" + restrictedArea.getMinY(), startX + ZOOM * 5,
-                    startY + ZOOM * 5);
             for (Element e : elementList) {
                 int startElementX = offsetX + ZOOM * (e.getMinX());
                 int startElementY = offsetY + ZOOM * (e.getMinY());
@@ -99,10 +97,13 @@ public class BoardWindow extends JFrame {
                 g.setColor(Color.BLACK);
                 g.drawRect(startElementX, startElementY, ZOOM * e.getWidth(), ZOOM * e.getHeight());
             }
+            // После отрисовки всех элементов отрисовываем подписи к ним
             for (Element e : elementList) {
                 g.drawString("#" + e.getNumber() + ", x=" + e.getCenterX() + ", y=" + e.getCenterY(),
                         ZOOM * e.getCenterX(), ZOOM * (e.getCenterY()));
             }
+            g.drawString("x=" + restrictedArea.getMinX() + ", y=" + restrictedArea.getMinY(), startX + ZOOM * 5,
+                    startY + ZOOM * 5);
         }
     }
 }

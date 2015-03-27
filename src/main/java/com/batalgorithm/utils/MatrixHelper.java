@@ -4,6 +4,8 @@ import Jama.Matrix;
 import com.batalgorithm.main.Element;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Предназначен для упрощения работы с матрицами.
@@ -24,6 +26,21 @@ public class MatrixHelper {
         for (int r = 0; r < rowDimension; r++) {
             for (int c = 0; c < columnDimension; c++) {
                 result.append(matrix.get(r, c));
+                result.append(" ");
+            }
+            result.append(System.lineSeparator());
+        }
+        return result.toString();
+    }
+
+    public static String toIntString(Matrix matrix) {
+        StringBuilder result = new StringBuilder();
+        result.append(System.lineSeparator());
+        int rowDimension = matrix.getRowDimension();
+        int columnDimension = matrix.getColumnDimension();
+        for (int r = 0; r < rowDimension; r++) {
+            for (int c = 0; c < columnDimension; c++) {
+                result.append((int) matrix.get(r, c));
                 result.append(" ");
             }
             result.append(System.lineSeparator());
@@ -171,26 +188,16 @@ public class MatrixHelper {
      * @return Форматированная строка со значениями координат элементов.
      */
     public static String coordinatesToString(List<Element> elementList) {
-        StringBuilder result = new StringBuilder();
-        result.append(System.lineSeparator());
+        Map<Integer, Element> elementMap = new TreeMap<>();
         for (Element e : elementList) {
-            result.append(e.getCenterX()).append(", ").append(e.getCenterY());
-            result.append(System.lineSeparator());
+            elementMap.put(e.getNumber(), e);
         }
-        return result.toString();
-    }
-
-    /**
-     * Формирует строку, содержащую координаты заданных элементы (центра элемента).
-     *
-     * @param elementList - список элементов
-     * @return Форматированная строка со значениями координат элементов.
-     */
-    public static String centerCoordinatesToString(List<Element> elementList) {
         StringBuilder result = new StringBuilder();
         result.append(System.lineSeparator());
-        for (Element e : elementList) {
-            result.append(e.getCenterX()).append(", ").append(e.getCenterY());
+        for (Integer number : elementMap.keySet()) {
+            Element e = elementMap.get(number);
+            result.append("#").append(e.getNumber()).append(", ").
+                    append(e.getCenterX()).append(", ").append(e.getCenterY());
             result.append(System.lineSeparator());
         }
         return result.toString();

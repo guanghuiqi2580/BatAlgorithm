@@ -1,19 +1,18 @@
 package com.batalgorithm.main;
 
 import Jama.Matrix;
-import com.batalgorithm.utils.ElementDecreaseAreaComparator;
-import com.batalgorithm.utils.ElementRandomComparator;
-import com.batalgorithm.utils.MatlabSubstitute;
+import com.batalgorithm.utils.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
 import static com.batalgorithm.utils.MatrixHelper.*;
 
 public class BatAlgorithm {
 
+    private static final Logger LOG = Logger.getLogger(BatAlgorithm.class.getName());
     private static final int NUMBER_OF_CYCLE_EXECUTION = 1000;
 
     private CircuitBoard circuitBoard;
@@ -75,51 +74,76 @@ public class BatAlgorithm {
         int bestIndex = (int) I.get(0, 0) - 1;
         best = solutions.get(bestIndex);
 
+        StringBuilder initialReport = new StringBuilder();
+        initialReport.append("Initial solutions (Element number, X, Y): ").append(System.lineSeparator());
+        for (int i = 0; i < solutions.size(); i++) {
+            List<Element> solution = solutions.get(i);
+            initialReport.append("Solution ").append(i).append(": ").
+                    append(MatrixHelper.coordinatesToString(solution));
+        }
+        initialReport.append("Initial best solution number: ").append(bestIndex).append(System.lineSeparator());
+        initialReport.append("Initial best solution: ").append(MatrixHelper.coordinatesToString(getBest()));
+        initialReport.append("Initial best solution length: ").append(minLength).append(System.lineSeparator());
+        initialReport.append(PrintHelper.getDelimiter());
+        LOG.info(initialReport.toString());
+
         // Начинаем итерации алгоритма (важная часть)
         Matrix Sx = new Matrix(n, d);
         Matrix Sy = new Matrix(n, d);
-        try {
-            for (int t = 0; t < N_gen; t++) {
-                // Цикл по всем летучим мышам / решениям
-                for (int i = 0; i < n; i++) {
-                    // Генерируем вектор частоты в диапазоне от минимальной до максимальной
-                    setForAllInRow(Q, i, Qmin + Qmin - Qmax * MatlabSubstitute.rand());
-                    // Достаем текущее решение из списка всех решений
-                    List<Element> currSolution = solutions.get(i);
-                    // Генеррируем новые скорости по осям
-                    Matrix minusX = getXRow(currSolution).minus(getXRow(best));
-                    Matrix minusY = getYRow(currSolution).minus(getYRow(best));
-                    Matrix vXRow = getRow(v, i).plus(minusX.times(getRow(Q, i).get(0, 0)));
-                    Matrix vYRow = getRow(v, i).plus(minusY.
-                            times(getRow(Q, i).get(0, 0)));
-                    // Перемещаем центры элеентов в соответсвии со значениями скоростей
-                    setRow(Sx, getXRow(currSolution).plus(vXRow), i);
-                    setRow(Sy, getYRow(currSolution).plus(vYRow), i);
-                    // Применяем ограничения
-                    solutions.set(i, bounds(currSolution));
-                    // Частота пульсации
-                    if (MatlabSubstitute.rand() > r) {
-                        // Коэффициент "maxStep" ограничивает размеры шагов случайных перемещений
-                        setRow(Sx, getXRow(best).plus(MatlabSubstitute.randn(1, d).times(maxStep)), i);
-                        setRow(Sy, getYRow(best).plus(MatlabSubstitute.randn(1, d).times(maxStep)), i);
-                    }
-                    // Оценим новые решения
-                    List<Element> elements = convertToElementList(Sx, Sy, i);
-                    double Fnew = calculateLength(elements);
-                    // Обновить, если решение лучше или не слишком громко
-                    if ((Fnew <= solutionLength.get(0, i)) && (MatlabSubstitute.rand() < A)) {
-                        setNewSolution(solutions, getRow(Sx, i), getRow(Sy, i), i);
-                    }
-                    // Обновим текущее лучшее решение
-                    if (Fnew < minLength) {
-                        setNewBest(getRow(Sx, i), getRow(Sy, i));
-                        minLength = Fnew;
-                    }
+        for (int t = 0; t < N_gen; t++) {
+            // Цикл по всем летучим мышам / решениям
+            for (int i = 0; i < n; i++) {
+                // Генерируем вектор частоты в диапазоне от минимальной до максимальной
+                setForAllInRow(Q, i, Qmin + Qmin - Qmax * MatlabSubstitute.rand());
+                // Достаем текущее решение из списка всех решений
+                List<Element> currSolution = solutions.get(i);
+                // Генеррируем новые скорости по осям
+                Matrix minusX = getXRow(currSolution).minus(getXRow(best));
+                Matrix minusY = getYRow(currSolution).minus(getYRow(best));
+                Matrix vXRow = getRow(v, i).plus(minusX.times(getRow(Q, i).get(0, 0)));
+                Matrix vYRow = getRow(v, i).plus(minusY.times(getRow(Q, i).get(0, 0)));
+                // Перемещаем центры элеентов в соответсвии со значениями скоростей
+                setRow(Sx, getXRow(currSolution).plus(vXRow), i);
+                setRow(Sy, getYRow(currSolution).plus(vYRow), i);
+                // Применяем ограничения
+                solutions.set(i, bounds(currSolution));
+                // Частота пульсации
+                if (MatlabSubstitute.rand() > r) {
+                    // Коэффициент "maxStep" ограничивает размеры шагов случайных перемещений
+                    setRow(Sx, getXRow(best).plus(MatlabSubstitute.randn(1, d).times(maxStep)), i);
+                    setRow(Sy, getYRow(best).plus(MatlabSubstitute.randn(1, d).times(maxStep)), i);
                 }
-                iter = iter + n;
+                // Оценим новые решения
+                List<Element> elements = convertToElementList(Sx, Sy, i);
+                double Fnew = calculateLength(elements);
+                // Обновить, если решение лучше или не слишком громко
+                if ((Fnew <= solutionLength.get(0, i)) && (MatlabSubstitute.rand() < A)) {
+                    setNewSolution(solutions, getRow(Sx, i), getRow(Sy, i), i);
+                }
+                // Обновим текущее лучшее решение
+                boolean foundBest = false;
+                if (Fnew < minLength) {
+                    setNewBest(getRow(Sx, i), getRow(Sy, i));
+                    minLength = Fnew;
+                    foundBest = true;
+                }
+                StringBuilder report = new StringBuilder();
+                report.append("Generation number: ").append(t).append(System.lineSeparator());
+                report.append("Solution (element) number: ").append(i).append(System.lineSeparator());
+                report.append("Velocity X: ").append(MatrixHelper.toIntString(vXRow)).append(System.lineSeparator());
+                report.append("Velocity Y: ").append(MatrixHelper.toIntString(vYRow)).append(System.lineSeparator());
+                report.append("Element X: ").append(MatrixHelper.toIntString(Sx)).append(System.lineSeparator());
+                report.append("Element Y: ").append(MatrixHelper.toIntString(Sy)).append(System.lineSeparator());
+                report.append("Best solution has been found: ").append(foundBest).append(System.lineSeparator());
+                if (foundBest) {
+                    report.append("New best solution: ").append(MatrixHelper.coordinatesToString(getBest())).
+                            append(System.lineSeparator());
+                    report.append("New min length: ").append(minLength).append(System.lineSeparator());
+                }
+                report.append(PrintHelper.getDelimiter());
+                LOG.info(report.toString());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            iter = iter + n;
         }
     }
 
@@ -139,6 +163,7 @@ public class BatAlgorithm {
             element.setCenterY((int) yRow.get(0, i));
             best.set(i, element);
         }
+        bounds(best);
     }
 
     private void setNewSolution(List<List<Element>> solutions, Matrix xRow, Matrix yRow, int solutionNumber) {
@@ -184,116 +209,92 @@ public class BatAlgorithm {
     }
 
     private List<Element> generateNewCoordinates() {
-        List<Element> copyElementsList = elementList.stream().map(e -> new Element(e.getNumber(), 0, 0, e.getWidth(), e.getHeight())).collect(Collectors.toList());
+        List<Element> copyElementsList = new ArrayList<>(elementList.size());
+        for (Element e : elementList) {
+            copyElementsList.add(e.copy());
+        }
         Collections.sort(copyElementsList, new ElementRandomComparator());
         List<Element> resultList = null;
         boolean placed;
         int count = 0;
         do {
             try {
-                resultList = pack(copyElementsList);
+                resultList = randomPack(copyElementsList);
                 placed = true;
             } catch (Exception e) {
-                System.out.println(e.getMessage() + " Trying again...");
                 placed = false;
             }
             if (count++ > NUMBER_OF_CYCLE_EXECUTION) {
-                throw new RuntimeException("Endless loop");
+                break;
             }
         } while (!placed || count < NUMBER_OF_CYCLE_EXECUTION);
         return resultList;
     }
 
-    // Применение ограничений
+    /**
+     * Применение ограничений для заданного списка элементов.
+     *
+     * @param elementList - список элементов
+     * @return Список элементов, к которым применены ограничения.
+     */
     private List<Element> bounds(List<Element> elementList) {
         List<Element> resultList = new ArrayList<>();
-        for (Element element : elementList) {
-            boolean hasBeenAdded = false;
-            int count = 0;
+        for (Element current : elementList) {
+            boolean placed = false;
+            boolean rotate = false;
+            boolean startAgain = false;
+            int x = current.getCenterX();
+            int y = current.getCenterY();
             do {
-                if (checkBaseRestrictions(element)) {
-                    while (intersects(element, resultList)) {
-                        moveToNearEmptySpace(element, resultList);
+                if (checkBaseRestrictions(current)) {
+                    boolean intersectWithElement = false;
+                    for (Element pack : resultList) {
+                        if (!current.equals(pack)) {
+                            if (current.intersects(pack, minDistance)) {
+                                intersectWithElement = true;
+                            }
+                        }
                     }
-                    resultList.add(element.copy());
-                    hasBeenAdded = true;
-                } else {
-                    moveToBoard(element);
+                    if (!intersectWithElement) {
+                        resultList.add(current);
+                        placed = true;
+                    }
                 }
-                if (count++ > NUMBER_OF_CYCLE_EXECUTION) {
-                    break;
+                if (!placed) {
+                    if (x < circuitBoard.getWidth()) {
+                        x++;
+                    } else if (y < circuitBoard.getHeight()) {
+                        x = 0;
+                        y++;
+                    } else if (!startAgain && x == circuitBoard.getWidth() && y == circuitBoard.getHeight()) {
+                        x = 0;
+                        y = 0;
+                        startAgain = true;
+                    } else {
+                        if (!rotate) {
+                            current = new Element(current.getNumber(), 0, 0, current.getHeight(), current.getWidth());
+                            x = 0;
+                            y = 0;
+                            rotate = true;
+                        } else {
+                            break;
+                        }
+                    }
+                    current.setCenterX(x);
+                    current.setCenterY(y);
                 }
-            } while (!hasBeenAdded);
+            } while (!placed);
         }
         return resultList;
     }
 
-    private void moveToNearEmptySpace(Element element, List<Element> elementList) {
-        int startX = element.getCenterX();
-        int startY = element.getCenterY();
-        int x;
-        int y;
-        int stepSize = 1;
-        int count = 0;
-        do {
-            x = (int) (startX + MatlabSubstitute.getRandomSign() * Math.random() * stepSize);
-            y = (int) (startY + MatlabSubstitute.getRandomSign() * Math.random() * stepSize);
-            if (count % 10 == 0) {
-                stepSize++;
-            }
-            element.setCenterX(x);
-            element.setCenterY(y);
-            if (!circuitBoard.contains(element)) {
-                moveToBoard(element);
-                continue;
-            }
-            if (count++ > NUMBER_OF_CYCLE_EXECUTION) {
-                break;
-            }
-        } while (intersects(element, elementList));
-    }
-
-    private void moveToBoard(Element element) {
-        int boardX = circuitBoard.getCenterX();
-        int boardY = circuitBoard.getCenterY();
-        int elementX = element.getCenterX();
-        int elementY = element.getCenterY();
-        if (boardX == elementX && boardY == elementY) {
-            return;
-        }
-        int count = 0;
-        do {
-            if (elementX < boardX) {
-                elementX++;
-            } else if (elementX > boardX) {
-                elementX--;
-            }
-            if (elementY < boardY) {
-                elementY++;
-            } else if (elementY > boardY) {
-                elementY--;
-            }
-            element.setCenterX(elementX);
-            element.setCenterY(elementY);
-            if (count++ > NUMBER_OF_CYCLE_EXECUTION) {
-                break;
-            }
-        } while (!circuitBoard.contains(element));
-    }
-
-    private boolean intersects(Element checkElement, List<Element> elementList) {
-        for (Element e : elementList) {
-            if (!e.equals(checkElement)) {
-                if (e.intersects(checkElement, 0)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    // Проверяем базовые ограничения: элемент размещен полностью на монтажной плате и элемент не пересекается с
-    // запертной зоной
+    /**
+     * Проверяем базовые ограничения: элемент размещен полностью на монтажной плате и элемент не пересекается с
+     * запертной зоной.
+     *
+     * @param element - список элементов
+     * @return True - ограничения выполняются, иначе - False.
+     */
     private boolean checkBaseRestrictions(Element element) {
         return circuitBoard.contains(element) && !restrictedArea.intersects(element, 0);
     }
@@ -310,28 +311,20 @@ public class BatAlgorithm {
         return best;
     }
 
-    private List<Element> pack(List<Element> elementList) {
+    private List<Element> randomPack(List<Element> elementList) {
         List<Element> packElementList = new ArrayList<>();
         for (Element current : elementList) {
             boolean placed = false;
             boolean rotate = false;
-            int x = 0;
-            int y = 0;
+            boolean startAgain = false;
+            int x = (int) (Math.random() * circuitBoard.getWidth());
+            int y = (int) (Math.random() * circuitBoard.getHeight());
             do {
-                current.setCenterX(x);
-                current.setCenterY(y);
                 if (checkBaseRestrictions(current)) {
                     boolean intersectWithElement = false;
                     for (Element pack : packElementList) {
-                        if (!current.equals(pack)) {
-                            Element safeZone = new Element(pack.getNumber(),
-                                    pack.getCenterX() - minDistance,
-                                    pack.getCenterY() - minDistance,
-                                    pack.getWidth() + minDistance * 2,
-                                    pack.getHeight() + minDistance * 2);
-                            if (current.intersects(safeZone, 0)) {
-                                intersectWithElement = true;
-                            }
+                        if (!current.equals(pack) && current.intersects(pack, minDistance)) {
+                            intersectWithElement = true;
                         }
                     }
                     if (!intersectWithElement) {
@@ -345,16 +338,22 @@ public class BatAlgorithm {
                     } else if (y < circuitBoard.getHeight()) {
                         x = 0;
                         y++;
+                    } else if (!startAgain && x == circuitBoard.getWidth() && y == circuitBoard.getHeight()) {
+                        x = 0;
+                        y = 0;
+                        startAgain = true;
                     } else {
-                        if (rotate) {
-                            throw new RuntimeException("Can not place element: " + current);
-                        } else {
+                        if (!rotate) {
                             current = new Element(current.getNumber(), 0, 0, current.getHeight(), current.getWidth());
                             x = 0;
                             y = 0;
                             rotate = true;
+                        } else {
+                            break;
                         }
                     }
+                    current.setCenterX(x);
+                    current.setCenterY(y);
                 }
             } while (!placed);
         }

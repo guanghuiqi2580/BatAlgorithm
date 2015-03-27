@@ -6,12 +6,32 @@ import com.batalgorithm.utils.MatrixHelper;
 import com.batalgorithm.utils.PrintHelper;
 import com.batalgorithm.view.BoardWindow;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.LogManager;
 
 public class Main {
 
     public static void main(String[] args) {
+
+        try {
+            URL resource = Main.class.getClassLoader().getResource("logging.properties");
+            File logPropertiesFile = null;
+            if (resource != null) {
+                logPropertiesFile = new File(resource.getFile());
+            }
+            if (logPropertiesFile != null) {
+                LogManager.getLogManager().readConfiguration(new FileInputStream(logPropertiesFile));
+            } else {
+                System.err.println("File with logger configuration not found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Could not setup logger configuration: " + e.toString());
+        }
 
         System.out.println(PrintHelper.getDelimiter());
         System.out.println(PrintHelper.divide("Program Batman v0.1 design for deployment of electronic circuit board" +
@@ -120,7 +140,7 @@ public class Main {
         System.out.println("Solution information: ");
         System.out.println("The number of function evaluation: " + batAlgorithm.getIter());
         System.out.println("Best found coordinates for elements: [x,y] = " +
-                MatrixHelper.centerCoordinatesToString(bestElementPlaced));
+                MatrixHelper.coordinatesToString(bestElementPlaced));
         System.out.println("Minimum found L(G): " + batAlgorithm.getMinLength());
         System.out.println("Drawing the scheme in the separate window...");
         System.out.println(PrintHelper.getDelimiter());
