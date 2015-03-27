@@ -2,6 +2,7 @@ package com.batalgorithm.main;
 
 import Jama.Matrix;
 import com.batalgorithm.view.BoardWindow;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -13,6 +14,7 @@ import java.util.logging.LogManager;
 public class BatAlgorithmTest {
 
     @Test
+    @Ignore
     public void test() throws Exception {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
@@ -51,7 +53,7 @@ public class BatAlgorithmTest {
                     elementList, distance);
             batAlgorithm.calculate(10, 5000, 0.5, 0.5, 0, 2, 5);
             new BoardWindow(circuitBoard, restrictedArea, batAlgorithm.getBest());
-            Thread.sleep(60 * 1000);
+//            Thread.sleep(60 * 1000);
         } catch (IOException e) {
             System.err.println("Could not setup logger configuration: " + e.toString());
         }
