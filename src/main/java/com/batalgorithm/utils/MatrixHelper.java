@@ -165,7 +165,7 @@ public class MatrixHelper {
     }
 
     /**
-     * Формирует строку, содержащую координаты заданных элементы.
+     * Формирует строку, содержащую координаты заданных элементы (левого верхнего угла элемнта).
      *
      * @param elementList - список элементов
      * @return Форматированная строка со значениями координат элементов.
@@ -174,7 +174,23 @@ public class MatrixHelper {
         StringBuilder result = new StringBuilder();
         result.append(System.lineSeparator());
         for (Element e : elementList) {
-            result.append(e.getX()).append(", ").append(e.getY());
+            result.append(e.getCenterX()).append(", ").append(e.getCenterY());
+            result.append(System.lineSeparator());
+        }
+        return result.toString();
+    }
+
+    /**
+     * Формирует строку, содержащую координаты заданных элементы (центра элемента).
+     *
+     * @param elementList - список элементов
+     * @return Форматированная строка со значениями координат элементов.
+     */
+    public static String centerCoordinatesToString(List<Element> elementList) {
+        StringBuilder result = new StringBuilder();
+        result.append(System.lineSeparator());
+        for (Element e : elementList) {
+            result.append(e.getCenterX()).append(", ").append(e.getCenterY());
             result.append(System.lineSeparator());
         }
         return result.toString();

@@ -6,8 +6,6 @@ import com.batalgorithm.main.RestrictedArea;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Окно приложения для схематического отображения размещения элементов на плате.
@@ -21,8 +19,8 @@ public class BoardWindow extends JFrame {
 
     public BoardWindow(CircuitBoard circuitBoard, RestrictedArea restrictedArea, final java.util.List<Element>
             elementList) {
-        width = (int) circuitBoard.getWidth();
-        height = (int) circuitBoard.getHeight();
+        width = circuitBoard.getWidth();
+        height = circuitBoard.getHeight();
         setSize(ZOOM * width + 30, ZOOM * height + 100);
         setResizable(true);
         BoardPanel boardPanel = new BoardPanel(width, height, restrictedArea, elementList);
@@ -30,34 +28,28 @@ public class BoardWindow extends JFrame {
         zoomLabel = new Label("Zoom: x" + ZOOM);
         Button zoomPlus = new Button(" + ");
         Button zoomMinus = new Button(" - ");
-        zoomPlus.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand().equals(" + ")) {
-                    if (ZOOM < 10) {
-                        ZOOM++;
-                    } else {
-                        ZOOM = 1;
-                    }
-                    zoomLabel.setText("Zoom: x" + ZOOM);
-                    setSize(ZOOM * width + 30, ZOOM * height + 100);
-                    repaint();
+        zoomPlus.addActionListener(e -> {
+            if (e.getActionCommand().equals(" + ")) {
+                if (ZOOM < 10) {
+                    ZOOM++;
+                } else {
+                    ZOOM = 1;
                 }
+                zoomLabel.setText("Zoom: x" + ZOOM);
+                setSize(ZOOM * width + 30, ZOOM * height + 100);
+                repaint();
             }
         });
-        zoomMinus.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand().equals(" - ")) {
-                    if (ZOOM > 1) {
-                        ZOOM--;
-                    } else {
-                        ZOOM = 1;
-                    }
-                    zoomLabel.setText("Zoom: x" + ZOOM);
-                    setSize(ZOOM * width + 30, ZOOM * height + 100);
-                    repaint();
+        zoomMinus.addActionListener(e -> {
+            if (e.getActionCommand().equals(" - ")) {
+                if (ZOOM > 1) {
+                    ZOOM--;
+                } else {
+                    ZOOM = 1;
                 }
+                zoomLabel.setText("Zoom: x" + ZOOM);
+                setSize(ZOOM * width + 30, ZOOM * height + 100);
+                repaint();
             }
         });
         JPanel zoomPanel = new JPanel();
@@ -65,7 +57,7 @@ public class BoardWindow extends JFrame {
         zoomPanel.add(zoomPlus);
         zoomPanel.add(zoomMinus);
         add(BorderLayout.SOUTH, zoomPanel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
 
@@ -92,26 +84,25 @@ public class BoardWindow extends JFrame {
             g.setColor(Color.BLACK);
             g.drawRect(offsetX, offsetY, ZOOM * width, ZOOM * height);
             g.setColor(Color.RED);
-            int startX = offsetX + ZOOM * (int) (restrictedArea.getX());
-            int startY = offsetY + ZOOM * (int) (restrictedArea.getY());
-            g.fillRect(startX, startY, ZOOM * (int) restrictedArea.getWidth(), ZOOM * (int) restrictedArea.getHeight());
+            int startX = offsetX + ZOOM * (restrictedArea.getMinX());
+            int startY = offsetY + ZOOM * (restrictedArea.getMinY());
+            g.fillRect(startX, startY, ZOOM * restrictedArea.getWidth(), ZOOM * restrictedArea.getHeight());
             g.setColor(Color.BLACK);
-            g.drawRect(startX, startY, ZOOM * (int) restrictedArea.getWidth(), ZOOM * (int) restrictedArea.getHeight());
-            g.drawString("x=" + (int) restrictedArea.getX() + ", y=" + (int) restrictedArea.getY(), startX + ZOOM * 5,
+            g.drawRect(startX, startY, ZOOM * restrictedArea.getWidth(), ZOOM * restrictedArea.getHeight());
+            g.drawString("x=" + restrictedArea.getMinX() + ", y=" + restrictedArea.getMinY(), startX + ZOOM * 5,
                     startY + ZOOM * 5);
             for (Element e : elementList) {
-                int startElementX = offsetX + ZOOM * (int) (e.getX());
-                int startElementY = offsetY + ZOOM * (int) (e.getY());
+                int startElementX = offsetX + ZOOM * (e.getMinX());
+                int startElementY = offsetY + ZOOM * (e.getMinY());
                 g.setColor(Color.GREEN);
-                g.fillRect(startElementX, startElementY, ZOOM * (int) e.getWidth(), ZOOM * (int) e.getHeight());
+                g.fillRect(startElementX, startElementY, ZOOM * e.getWidth(), ZOOM * e.getHeight());
                 g.setColor(Color.BLACK);
-                g.drawRect(startElementX, startElementY, ZOOM * (int) e.getWidth(), ZOOM * (int) e.getHeight());
-                g.drawString("#" + e.getNumber() + ", x=" + (int) e.getCenterX() + ", y=" + (int) e.getCenterY(), ZOOM *
-                        (int) e
-                                .getCenterX(), ZOOM * (int) (e.getCenterY()));
+                g.drawRect(startElementX, startElementY, ZOOM * e.getWidth(), ZOOM * e.getHeight());
             }
-
-            //TODO Сначала отривовать все элементы, а потом подписи к ним, чтобы элементы не перекрывали подписи.
+            for (Element e : elementList) {
+                g.drawString("#" + e.getNumber() + ", x=" + e.getCenterX() + ", y=" + e.getCenterY(),
+                        ZOOM * e.getCenterX(), ZOOM * (e.getCenterY()));
+            }
         }
     }
 }

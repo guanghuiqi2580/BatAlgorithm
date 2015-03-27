@@ -108,7 +108,7 @@ public class Main {
         System.out.println("Maximum searching step: " + maxStep);
         System.out.println(PrintHelper.getDelimiter());
 
-        CircuitBoard circuitBoard = new CircuitBoard(circuitBoardA, circuitBoardB);
+        CircuitBoard circuitBoard = new CircuitBoard(circuitBoardA / 2, circuitBoardB / 2, circuitBoardA, circuitBoardB);
         RestrictedArea restrictedArea = new RestrictedArea(restrictedAreaX, restrictedAreaY,
                 restrictedAreaA, restrictedAreaB);
         BatAlgorithm batAlgorithm = new BatAlgorithm(circuitBoard, restrictedArea, adjMatrix,
@@ -119,8 +119,8 @@ public class Main {
         System.out.println(PrintHelper.getDelimiter());
         System.out.println("Solution information: ");
         System.out.println("The number of function evaluation: " + batAlgorithm.getIter());
-        System.out.println("Best found coordinates for elements: [x,y] = " + MatrixHelper.coordinatesToString
-                (bestElementPlaced));
+        System.out.println("Best found coordinates for elements: [x,y] = " +
+                MatrixHelper.centerCoordinatesToString(bestElementPlaced));
         System.out.println("Minimum found L(G): " + batAlgorithm.getMinLength());
         System.out.println("Drawing the scheme in the separate window...");
         System.out.println(PrintHelper.getDelimiter());

@@ -1,16 +1,11 @@
 package com.batalgorithm.main;
 
-import java.awt.*;
-
-/**
- * Объектное отображение элемента, предназначенного для размещения на монтажной плате.
- */
 public class Element extends Rectangle {
 
     private int number;
 
-    public Element(int number, int x, int y, int width, int height) {
-        super(x, y, width, height);
+    public Element(int number, int centerX, int centerY, int width, int height) {
+        super(centerX, centerY, width, height);
         this.number = number;
     }
 
@@ -18,34 +13,15 @@ public class Element extends Rectangle {
         return number;
     }
 
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     public int getArea() {
-        return width * height;
+        return getWidth() * getHeight();
     }
 
-    @Override
-    public String toString() {
-        return "Element{" +
-                "number=" + number +
-                ", x=" + getX() +
-                ", y=" + getY() +
-                ", width=" + getWidth() +
-                ", height=" + getHeight() +
-                '}';
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setCenterY(int centerY) {
-        this.y = centerY - height / 2;
-    }
-
-    public void setCenterX(int centerX) {
-        this.x = centerX - width / 2;
+    protected Element copy() {
+        return new Element(getNumber(), getCenterX(), getCenterY(), getWidth(), getHeight());
     }
 }
