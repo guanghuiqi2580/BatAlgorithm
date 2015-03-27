@@ -19,15 +19,16 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-            URL resource = Main.class.getClassLoader().getResource("logging.properties");
             File logPropertiesFile = null;
+            URL resource = Main.class.getClassLoader().getResource("logging.properties");
             if (resource != null) {
                 logPropertiesFile = new File(resource.getFile());
             }
+            if (logPropertiesFile != null && !logPropertiesFile.canRead()) {
+                logPropertiesFile = new File("C:\\bat_algorithm\\logging.properties");
+            }
             if (logPropertiesFile != null) {
                 LogManager.getLogManager().readConfiguration(new FileInputStream(logPropertiesFile));
-            } else {
-                System.err.println("File with logger configuration not found.");
             }
         } catch (IOException e) {
             System.err.println("Could not setup logger configuration: " + e.toString());
