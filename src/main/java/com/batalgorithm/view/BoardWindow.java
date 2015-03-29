@@ -6,6 +6,7 @@ import com.batalgorithm.main.RestrictedArea;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Окно приложения для схематического отображения размещения элементов на плате.
@@ -16,14 +17,17 @@ public class BoardWindow extends JFrame {
     private static Label zoomLabel;
     private int width;
     private int height;
+    private CopyOnWriteArrayList<Element> elementList;
+    private BoardPanel boardPanel;
 
     public BoardWindow(CircuitBoard circuitBoard, RestrictedArea restrictedArea, final java.util.List<Element>
             elementList) {
+        this.elementList = new CopyOnWriteArrayList<>(elementList);
         width = circuitBoard.getWidth();
         height = circuitBoard.getHeight();
         setSize(ZOOM * width + 30, ZOOM * height + 100);
         setResizable(true);
-        BoardPanel boardPanel = new BoardPanel(width, height, restrictedArea, elementList);
+        boardPanel = new BoardPanel(width, height, restrictedArea);
         add(BorderLayout.CENTER, boardPanel);
         zoomLabel = new Label("Zoom: x" + ZOOM);
         Button zoomPlus = new Button(" + ");
@@ -61,24 +65,29 @@ public class BoardWindow extends JFrame {
         setVisible(true);
     }
 
+    public void setElementList(java.util.List<Element> elementList) {
+        this.elementList = new CopyOnWriteArrayList<>(elementList);
+        boardPanel.repaint();
+    }
+
     class BoardPanel extends JPanel {
 
         private int width;
         private int height;
         private RestrictedArea restrictedArea;
-        private java.util.List<Element> elementList;
 
-        public BoardPanel(int width, int height, RestrictedArea restrictedArea, java.util.List<Element> elementList) {
+        public BoardPanel(int width, int height, RestrictedArea restrictedArea) {
             this.width = width;
             this.height = height;
             this.restrictedArea = restrictedArea;
-            this.elementList = elementList;
             setSize(ZOOM * width + 10, ZOOM * height + 10);
             setVisible(true);
         }
 
         @Override
         public void paint(Graphics g) {
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, getWidth(), getHeight());
             int offsetX = 5;
             int offsetY = 5;
             g.setColor(Color.BLACK);

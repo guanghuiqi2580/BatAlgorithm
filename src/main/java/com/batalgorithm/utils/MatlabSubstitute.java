@@ -11,6 +11,8 @@ import java.util.Random;
  */
 public class MatlabSubstitute {
 
+    private static Random random = new Random();
+
     /**
      * Формирует массив размера m х n, элементами которого являются случайные величины,
      * распределенные по нормальному закону с математическим ожиданием 0 и среднеквадратическим отклонением 1.
@@ -184,7 +186,6 @@ public class MatlabSubstitute {
      * @return Случайное число.
      */
     public static double rand() {
-        Random random = new Random();
         return random.nextDouble();
     }
 
@@ -259,7 +260,7 @@ public class MatlabSubstitute {
      *
      * @return Возращает -1 или 1 с равной вероятностью.
      */
-    public static int getRandomSign() {
+    public static int randSign() {
         return (Math.random() > 0.5) ? -1 : 1;
     }
 }

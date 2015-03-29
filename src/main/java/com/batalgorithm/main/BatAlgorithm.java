@@ -3,12 +3,11 @@ package com.batalgorithm.main;
 import Jama.Matrix;
 import com.batalgorithm.utils.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
-import static com.batalgorithm.utils.MatrixHelper.*;
+import static com.batalgorithm.utils.MatrixHelper.getRow;
+import static com.batalgorithm.utils.MatrixHelper.setRow;
 
 public class BatAlgorithm {
 
@@ -61,7 +60,6 @@ public class BatAlgorithm {
             Collections.sort(elementListWithNewCoordinates, new ElementDecreaseAreaComparator());
             solutions.add(elementListWithNewCoordinates);
         }
-
         // Находим суммарные длины связей для каждого из решений
         for (int row = 0; row < solutions.size(); row++) {
             solutionLength.set(0, row, calculateLength(solutions.get(row)));
@@ -93,15 +91,19 @@ public class BatAlgorithm {
         for (int t = 0; t < N_gen; t++) {
             // Цикл по всем летучим мышам / решениям
             for (int i = 0; i < n; i++) {
-                // Генерируем вектор частоты в диапазоне от минимальной до максимальной
-                setForAllInRow(Q, i, Qmin + Qmin - Qmax * MatlabSubstitute.rand());
-                // Достаем текущее решение из списка всех решений
                 List<Element> currSolution = solutions.get(i);
-                // Генеррируем новые скорости по осям
-                Matrix minusX = getXRow(currSolution).minus(getXRow(best));
-                Matrix minusY = getYRow(currSolution).minus(getYRow(best));
-                Matrix vXRow = getRow(v, i).plus(minusX.times(getRow(Q, i).get(0, 0)));
-                Matrix vYRow = getRow(v, i).plus(minusY.times(getRow(Q, i).get(0, 0)));
+                Matrix vXRow = getXRow(currSolution);
+                for (int row = 0; row < vXRow.getRowDimension(); row++) {
+                    for (int col = 0; col < vXRow.getColumnDimension(); col++) {
+                        vXRow.set(row, col, (Qmin + Qmin + Qmax * MatlabSubstitute.rand() * MatlabSubstitute.randSign()));
+                    }
+                }
+                Matrix vYRow = getYRow(currSolution);
+                for (int row = 0; row < vYRow.getRowDimension(); row++) {
+                    for (int col = 0; col < vYRow.getColumnDimension(); col++) {
+                        vYRow.set(row, col, (Qmin + Qmin + Qmax * MatlabSubstitute.rand() * MatlabSubstitute.randSign()));
+                    }
+                }
                 // Перемещаем центры элеентов в соответсвии со значениями скоростей
                 setRow(Sx, getXRow(currSolution).plus(vXRow), i);
                 setRow(Sy, getYRow(currSolution).plus(vYRow), i);
@@ -163,7 +165,7 @@ public class BatAlgorithm {
             element.setCenterY((int) yRow.get(0, i));
             best.set(i, element);
         }
-        bounds(best);
+        adjacencyPack(best);
     }
 
     private void setNewSolution(List<List<Element>> solutions, Matrix xRow, Matrix yRow, int solutionNumber) {
@@ -219,15 +221,16 @@ public class BatAlgorithm {
         int count = 0;
         do {
             try {
-                resultList = randomPack(copyElementsList);
+                resultList = adjacencyPack(copyElementsList);
                 placed = true;
             } catch (Exception e) {
+                e.printStackTrace();
                 placed = false;
             }
             if (count++ > NUMBER_OF_CYCLE_EXECUTION) {
                 break;
             }
-        } while (!placed || count < NUMBER_OF_CYCLE_EXECUTION);
+        } while (!placed);
         return resultList;
     }
 
@@ -242,9 +245,11 @@ public class BatAlgorithm {
         for (Element current : elementList) {
             boolean placed = false;
             boolean rotate = false;
-            boolean startAgain = false;
-            int x = current.getCenterX();
-            int y = current.getCenterY();
+            boolean reverse = false;
+            int startX = current.getCenterX();
+            int startY = current.getCenterY();
+            int x = startX;
+            int y = startY;
             do {
                 if (checkBaseRestrictions(current)) {
                     boolean intersectWithElement = false;
@@ -261,23 +266,32 @@ public class BatAlgorithm {
                     }
                 }
                 if (!placed) {
-                    if (x < circuitBoard.getWidth()) {
-                        x++;
-                    } else if (y < circuitBoard.getHeight()) {
-                        x = 0;
-                        y++;
-                    } else if (!startAgain && x == circuitBoard.getWidth() && y == circuitBoard.getHeight()) {
-                        x = 0;
-                        y = 0;
-                        startAgain = true;
+                    if (reverse) {
+                        if (x > 0) {
+                            x--;
+                        } else if (y > 0) {
+                            x = startX;
+                            y--;
+                        }
                     } else {
-                        if (!rotate) {
-                            current = new Element(current.getNumber(), 0, 0, current.getHeight(), current.getWidth());
+                        if (x < circuitBoard.getWidth()) {
+                            x++;
+                        } else if (y < circuitBoard.getHeight()) {
                             x = 0;
-                            y = 0;
-                            rotate = true;
+                            y++;
+                        } else if (x == circuitBoard.getWidth() && y == circuitBoard.getHeight()) {
+                            x = startX;
+                            y = startY;
+                            reverse = true;
                         } else {
-                            break;
+                            if (!rotate) {
+                                current = new Element(current.getNumber(), 0, 0, current.getHeight(), current.getWidth());
+                                x = 0;
+                                y = 0;
+                                rotate = true;
+                            } else {
+                                break;
+                            }
                         }
                     }
                     current.setCenterX(x);
@@ -311,40 +325,192 @@ public class BatAlgorithm {
         return best;
     }
 
-    private List<Element> randomPack(List<Element> elementList) {
-        List<Element> packElementList = new ArrayList<>();
-        for (Element current : elementList) {
-            boolean placed = false;
-            boolean rotate = false;
-            boolean startAgain = false;
-            int x = (int) (Math.random() * circuitBoard.getWidth());
-            int y = (int) (Math.random() * circuitBoard.getHeight());
-            do {
-                if (checkBaseRestrictions(current)) {
-                    boolean intersectWithElement = false;
-                    for (Element pack : packElementList) {
-                        if (!current.equals(pack) && current.intersects(pack, minDistance)) {
-                            intersectWithElement = true;
-                        }
-                    }
-                    if (!intersectWithElement) {
-                        packElementList.add(current);
-                        placed = true;
+    private List<Element> adjacencyPack(List<Element> elementList) {
+        // достаем элемент с макисмальной суммарной связью с другими элементами
+        List<Element> tmpElementList = new ArrayList<>();
+        for (Element e : elementList) {
+            tmpElementList.add(e.copy());
+        }
+        Map<Element, Integer> elementToSumLink = new HashMap<>();
+        for (Element e : elementList) {
+            elementToSumLink.put(e, 0);
+        }
+        for (Element e1 : elementList) {
+            for (Element e2 : elementList) {
+                if (!e1.equals(e2)) {
+                    int link = (int) adjacencyMatrix.get(e1.getNumber(), e2.getNumber());
+                    if (link > 0) {
+                        elementToSumLink.put(e1, elementToSumLink.get(e1) + link);
                     }
                 }
-                if (!placed) {
-                    if (x < circuitBoard.getWidth()) {
-                        x++;
-                    } else if (y < circuitBoard.getHeight()) {
-                        x = 0;
+            }
+        }
+        // заполняем карту, которая будет содержать для элемента связанные с ним элементы
+        Map<Element, List<Element>> elementLinkMap = new HashMap<>();
+        for (Element e : elementList) {
+            elementLinkMap.put(e, new ArrayList<>());
+        }
+        for (Element e1 : elementList) {
+            for (Element e2 : elementList) {
+                if (!e1.equals(e2)) {
+                    int link = (int) adjacencyMatrix.get(e1.getNumber(), e2.getNumber());
+                    if (link > 0) {
+                        List<Element> linkList = elementLinkMap.get(e1);
+                        linkList.add(e2);
+                    }
+                }
+            }
+        }
+        List<Element> packElementList = new ArrayList<>();
+        Element headElement = findElementWithMaxLink(elementToSumLink);
+        // генерируем координаты для первого элемента в верхней левой четверти платы
+        int startX = circuitBoard.getWidth() / 4 + (int) (Math.random() * circuitBoard.getWidth() / 2);
+        int startY = circuitBoard.getHeight() / 4 + (int) (Math.random() * circuitBoard.getHeight() / 2);
+        place(startX, startY, headElement, packElementList);
+        removeByNumber(tmpElementList, headElement.getNumber());
+        removeByNumber(elementToSumLink, headElement.getNumber());
+        while (tmpElementList.size() > 0) {
+            List<Element> linkedElements = getByNumber(elementLinkMap, headElement.getNumber());
+            if (linkedElements != null) {
+                Element prevElement = headElement;
+                for (Element e : linkedElements) {
+                    startX = prevElement.getMinX() - e.getWidth();
+                    startY = prevElement.getMinY() - e.getHeight();
+                    place(startX, startY, e, packElementList);
+                    removeByNumber(tmpElementList, e.getNumber());
+                    removeByNumber(elementToSumLink, e.getNumber());
+                    prevElement = e;
+                }
+                headElement = findElementWithMaxLink(elementToSumLink);
+            } else {
+                headElement = findElementWithMaxLink(elementToSumLink);
+            }
+            if (headElement == null) {
+                headElement = findElementWithMaxLink(elementToSumLink);
+            }
+            place(startX, startY, headElement, packElementList);
+            removeByNumber(tmpElementList, headElement.getNumber());
+            removeByNumber(elementToSumLink, headElement.getNumber());
+        }
+        return packElementList;
+    }
+
+    private void removeByNumber(List<Element> list, int number) {
+        Element forRemove = null;
+        for (Element e : list) {
+            if (e.getNumber() == number) {
+                forRemove = e;
+                break;
+            }
+        }
+        list.remove(forRemove);
+    }
+
+    private void removeByNumber(Map<Element, Integer> map, int number) {
+        Element forRemove = null;
+        for (Element e : map.keySet()) {
+            if (e.getNumber() == number) {
+                forRemove = e;
+                break;
+            }
+        }
+        map.remove(forRemove);
+    }
+
+    private List<Element> getByNumber(Map<Element, List<Element>> map, int number) {
+        Set<Element> elements = map.keySet();
+        for (Element e : elements) {
+            if (e.getNumber() == number) {
+                return map.get(e);
+            }
+        }
+        return null;
+    }
+
+    private Integer getByNumber(int number, Map<Element, Integer> map) {
+        Set<Element> keySet = map.keySet();
+        Element findElement = null;
+        for (Element e : keySet) {
+            if (e.getNumber() == number) {
+                findElement = e;
+                break;
+            }
+        }
+        return map.get(findElement);
+    }
+
+    private Element findElementWithMaxLink(Map<Element, Integer> elementToSumLink) {
+        Object[] array = elementToSumLink.values().toArray();
+        Arrays.sort(array, new Comparator<Object>() {
+            @Override public int compare(Object o1, Object o2) {
+                int i1 = (int) o1;
+                int i2 = (int) o2;
+                if (i1 < i2) {
+                    return 1;
+                } else if (i2 < i1) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
+        Set<Element> elements = elementToSumLink.keySet();
+        Element findElement = null;
+        for (int i = 0; i < array.length; i++) {
+            for (Element e : elements) {
+                if (getByNumber(e.getNumber(), elementToSumLink) == array[i]) {
+                    findElement = e;
+                    break;
+                }
+            }
+            if (findElement != null) {
+                break;
+            }
+        }
+        return findElement;
+    }
+
+    private void place(int startX, int startY, Element element, List<Element> packElementList) {
+        boolean placed = false;
+        boolean rotate = false;
+        boolean reverse = false;
+        int x = startX;
+        int y = startY;
+        do {
+            element.setCenterX(x);
+            element.setCenterY(y);
+            if (checkBaseRestrictions(element)) {
+                boolean intersectWithElement = false;
+                for (Element pack : packElementList) {
+                    if (!element.equals(pack) && element.intersects(pack, minDistance)) {
+                        intersectWithElement = true;
+                    }
+                }
+                if (!intersectWithElement) {
+                    packElementList.add(element);
+                    placed = true;
+                }
+            }
+            if (!placed) {
+                if (reverse) {
+                    if (y > 0) {
+                        y--;
+                    } else if (x > 0) {
+                        y = startY;
+                        x--;
+                    }
+                } else {
+                    if (y < circuitBoard.getHeight()) {
                         y++;
-                    } else if (!startAgain && x == circuitBoard.getWidth() && y == circuitBoard.getHeight()) {
-                        x = 0;
-                        y = 0;
-                        startAgain = true;
+                    } else if (x < circuitBoard.getWidth()) {
+                        y = startY;
+                        x++;
+                    } else if (!reverse && x == circuitBoard.getWidth() && y == circuitBoard.getHeight()) {
+                        x = startX;
+                        y = startY;
+                        reverse = true;
                     } else {
                         if (!rotate) {
-                            current = new Element(current.getNumber(), 0, 0, current.getHeight(), current.getWidth());
+                            element = new Element(element.getNumber(), 0, 0, element.getHeight(), element.getWidth());
                             x = 0;
                             y = 0;
                             rotate = true;
@@ -352,11 +518,8 @@ public class BatAlgorithm {
                             break;
                         }
                     }
-                    current.setCenterX(x);
-                    current.setCenterY(y);
                 }
-            } while (!placed);
-        }
-        return packElementList;
+            }
+        } while (!placed);
     }
 }

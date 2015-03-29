@@ -43,17 +43,19 @@ public class BatAlgorithmTest {
             Matrix adjacencyMatrix = new Matrix(size, size);
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
-                    adjacencyMatrix.set(i, j, (int) (Math.random() * 10));
+                    adjacencyMatrix.set(i, j, 0); //(int) (Math.random() * 10));
                 }
             }
-            adjacencyMatrix.set(0, 1, 50);
-            adjacencyMatrix.set(1, 0, 50);
+            adjacencyMatrix.set(0, 1, 1);
+            adjacencyMatrix.set(1, 0, 1);
+            adjacencyMatrix.set(0, 3, 1);
+            adjacencyMatrix.set(3, 0, 1);
             int distance = 5;
             BatAlgorithm batAlgorithm = new BatAlgorithm(circuitBoard, restrictedArea, adjacencyMatrix,
                     elementList, distance);
             batAlgorithm.calculate(10, 5000, 0.5, 0.5, 0, 2, 5);
             new BoardWindow(circuitBoard, restrictedArea, batAlgorithm.getBest());
-//            Thread.sleep(60 * 1000);
+            Thread.sleep(60 * 1000);
         } catch (IOException e) {
             System.err.println("Could not setup logger configuration: " + e.toString());
         }
