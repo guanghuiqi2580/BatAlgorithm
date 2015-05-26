@@ -7,8 +7,8 @@ public class AlgorithmInformation {
 
     private int n;
     private int N_gen;
-    private int A;
-    private int r;
+    private double A;
+    private double r;
     private int Qmin;
     private int Qmax;
     private int maxStep;
@@ -29,19 +29,19 @@ public class AlgorithmInformation {
         N_gen = n_gen;
     }
 
-    public int getA() {
+    public double getA() {
         return A;
     }
 
-    public void setA(int a) {
+    public void setA(double a) {
         A = a;
     }
 
-    public int getR() {
+    public double getR() {
         return r;
     }
 
-    public void setR(int r) {
+    public void setR(double r) {
         this.r = r;
     }
 

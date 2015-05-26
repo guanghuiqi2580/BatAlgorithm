@@ -36,6 +36,12 @@ public class MainWindow extends JFrame {
             }
         });
 
+        JButton defaultsButton = new JButton("Значения по умолчанию");
+        defaultsButton.addActionListener(e -> {
+            inputCircuitBoardInformation.setDefaultValuesIntoInputs();
+            inputAlgorithmInformation.setDefaultValuesIntoInputs();
+        });
+
         JPanel runButtonPanel = new JPanel();
         runButtonPanel.add(runButton);
         runButtonPanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -48,11 +54,13 @@ public class MainWindow extends JFrame {
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
-        buttonPanel.add(inputCircuitBoardInformationButtonPanel);
-        buttonPanel.add(inputAlgorithmInformationButtonPanel);
         buttonPanel.add(runButtonPanel);
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        setLayout(new FlowLayout());
+        buttonPanel.add(defaultsButton);
+
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+
+        add(inputCircuitBoardInformationButtonPanel);
+        add(inputAlgorithmInformationButtonPanel);
         add(buttonPanel);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

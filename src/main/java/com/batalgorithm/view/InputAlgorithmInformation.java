@@ -33,6 +33,7 @@ public class InputAlgorithmInformation extends JPanel {
         inputFieldsPanel.setLayout(new GridLayout(4, 2));
 
         initializeInputs();
+        setDefaultValuesIntoInputs();
 
         JPanel inputNMainPanel = new JPanel();
         inputNMainPanel.setLayout(new BoxLayout(inputNMainPanel, BoxLayout.Y_AXIS));
@@ -124,6 +125,16 @@ public class InputAlgorithmInformation extends JPanel {
         add(mainPanel);
     }
 
+    public void setDefaultValuesIntoInputs() {
+        inputN.setText("20");
+        inputN_gen.setText("1000");
+        inputA.setText("0.5");
+        inputR.setText("0.5");
+        inputQmin.setText("1");
+        inputQmax.setText("5");
+        inputMaxStep.setText("5");
+    }
+
     private void initializeInputs() {
         NumberFormat numberInstance = NumberFormat.getNumberInstance();
         numberInstance.setGroupingUsed(false);
@@ -146,7 +157,13 @@ public class InputAlgorithmInformation extends JPanel {
 
     public AlgorithmInformation getAlgorithmInformation() {
         AlgorithmInformation algorithmInformation = new AlgorithmInformation();
-        //todo
+        algorithmInformation.setN(Integer.valueOf(inputN.getText()));
+        algorithmInformation.setN_gen(Integer.valueOf(inputN_gen.getText()));
+        algorithmInformation.setA(Double.valueOf(inputA.getText()));
+        algorithmInformation.setR(Double.valueOf(inputR.getText()));
+        algorithmInformation.setQmin(Integer.valueOf(inputQmin.getText()));
+        algorithmInformation.setQmax(Integer.valueOf(inputQmax.getText()));
+        algorithmInformation.setMaxStep(Integer.valueOf(inputMaxStep.getText()));
         return algorithmInformation;
     }
 }

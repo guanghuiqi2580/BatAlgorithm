@@ -1,11 +1,14 @@
 package com.batalgorithm.view;
 
+import Jama.Matrix;
 import com.batalgorithm.main.CircuitBoardInformation;
+import com.batalgorithm.main.Element;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.text.NumberFormat;
+import java.util.List;
 
 /**
  * Окно, предназначенное для ввода информации об элементах, размерах платы, размерах запретной зоны и т.д.
@@ -21,6 +24,9 @@ public class InputCircuitBoardInformation extends JPanel {
     private JTextField inputAdjMatrixSize;
     private JTextField inputMinDistance;
 
+    private Matrix adjMatrix;
+    private java.util.List<Element> elementList;
+
     public InputCircuitBoardInformation(JFrame owner) {
 
         JPanel mainPanel = new JPanel();
@@ -34,6 +40,7 @@ public class InputCircuitBoardInformation extends JPanel {
         inputFieldsPanel.setLayout(new GridLayout(3, 2));
 
         initializeInputs();
+        setDefaultValuesIntoInputs();
 
         JPanel inputCircuitSizePanel = new JPanel();
         inputCircuitSizePanel.setAlignmentX(LEFT_ALIGNMENT);
@@ -86,11 +93,12 @@ public class InputCircuitBoardInformation extends JPanel {
         JPanel inputAdjMatrixSizeInputPanel = new JPanel(new FlowLayout());
         inputAdjMatrixSizeInputPanel.add(inputAdjMatrixSize);
         JButton inputAdjMatrixButton = new JButton("Ввести матрицу");
+        InputCircuitBoardInformation thisInput = this;
         inputAdjMatrixButton.addActionListener(e -> {
             try {
                 Integer adjMatrixSize1 = Integer.valueOf(inputAdjMatrixSize.getText());
                 if (adjMatrixSize1 > 0) {
-                    new AdjacencyMatrixInput(owner, adjMatrixSize1);
+                    new AdjacencyMatrixInput(owner, adjMatrixSize1, thisInput);
                 } else {
                     throw new NumberFormatException();
                 }
@@ -122,6 +130,17 @@ public class InputCircuitBoardInformation extends JPanel {
         add(mainPanel);
     }
 
+    public void setDefaultValuesIntoInputs() {
+        inputCircuitSizeA.setText("140");
+        inputCircuitSizeB.setText("150");
+        inputRestrictedAreaX.setText("33");
+        inputRestrictedAreaY.setText("33");
+        inputRestrictedAreaA.setText("50");
+        inputRestrictedAreaB.setText("50");
+        inputAdjMatrixSize.setText("3");
+        inputMinDistance.setText("5");
+    }
+
     private void initializeInputs() {
         NumberFormat numberInstance = NumberFormat.getNumberInstance();
         numberInstance.setGroupingUsed(false);
@@ -144,8 +163,33 @@ public class InputCircuitBoardInformation extends JPanel {
         inputMinDistance.setColumns(10);
     }
 
+    public Matrix getAdjMatrix() {
+        return adjMatrix;
+    }
+
+    public void setAdjMatrix(Matrix adjMatrix) {
+        this.adjMatrix = adjMatrix;
+    }
+
+    public List<Element> getElementList() {
+        return elementList;
+    }
+
+    public void setElementList(List<Element> elementList) {
+        this.elementList = elementList;
+    }
+
     public CircuitBoardInformation getCircuitBoardInformation() {
         CircuitBoardInformation circuitBoardInformation = new CircuitBoardInformation();
+        circuitBoardInformation.setCircuitBoardA(Integer.valueOf(inputCircuitSizeA.getText()));
+        circuitBoardInformation.setCircuitBoardB(Integer.valueOf(inputCircuitSizeB.getText()));
+        circuitBoardInformation.setRestrictedAreaX(Integer.valueOf(inputRestrictedAreaX.getText()));
+        circuitBoardInformation.setRestrictedAreaY(Integer.valueOf(inputRestrictedAreaY.getText()));
+        circuitBoardInformation.setRestrictedAreaA(Integer.valueOf(inputRestrictedAreaA.getText()));
+        circuitBoardInformation.setRestrictedAreaB(Integer.valueOf(inputRestrictedAreaB.getText()));
+        circuitBoardInformation.setAdjMatrix(getAdjMatrix());
+        circuitBoardInformation.setElementList(elementList);
+        circuitBoardInformation.setMinDistance(Integer.valueOf(inputMinDistance.getText()));
         return circuitBoardInformation;
     }
 }
