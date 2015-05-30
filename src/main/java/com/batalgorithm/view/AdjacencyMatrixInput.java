@@ -114,6 +114,7 @@ public class AdjacencyMatrixInput extends JDialog {
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         pack();
         setVisible(true);
+        setResizable(false);
     }
 
     private class InputField extends JFormattedTextField {

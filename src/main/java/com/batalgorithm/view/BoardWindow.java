@@ -57,7 +57,7 @@ public class BoardWindow extends JFrame {
         zoomPanel.add(zoomPlus);
         zoomPanel.add(zoomMinus);
         add(BorderLayout.SOUTH, zoomPanel);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         setVisible(true);
     }
 

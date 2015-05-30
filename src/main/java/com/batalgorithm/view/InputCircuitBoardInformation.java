@@ -111,7 +111,18 @@ public class InputCircuitBoardInformation extends JPanel {
 
         JPanel inputSizeOfElementsPanel = new JPanel(new FlowLayout());
         JButton inputSizeOfElementsButton = new JButton("Ввести размеры элементов");
-        inputSizeOfElementsButton.addActionListener(e -> new ElementsSizeInput(owner));
+        inputSizeOfElementsButton.addActionListener(e -> {
+            try {
+                Integer adjMatrixSize1 = Integer.valueOf(inputAdjMatrixSize.getText());
+                if (adjMatrixSize1 > 0) {
+                    new ElementsSizeInput(owner, adjMatrixSize1, thisInput);
+                } else {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException exception) {
+                new Error(owner, "Неправильно задан размер матрицы смежности!");
+            }
+        });
         inputSizeOfElementsPanel.add(inputSizeOfElementsButton);
 
         JPanel inputMinDistanceBetweenElementsPanel = new JPanel(new FlowLayout());
