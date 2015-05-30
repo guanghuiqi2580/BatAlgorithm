@@ -2,8 +2,6 @@ package com.batalgorithm.main;
 
 import com.batalgorithm.view.BoardWindow;
 
-import java.util.List;
-
 /**
  * Данный класс осуществяет запуск алгоритма на вычисление.
  */
@@ -18,7 +16,6 @@ public class AlgorithmRunner {
                 boardInfo.getAdjMatrix(), boardInfo.getElementList(), boardInfo.getMinDistance());
         batAlgorithm.calculate(algInfo.getN(), algInfo.getN_gen(), algInfo.getA(), algInfo.getR(), algInfo.getQmin(),
                 algInfo.getQmax(), algInfo.getMaxStep());
-        List<Element> bestElementPlaced = batAlgorithm.getBest();
-        new BoardWindow(circuitBoard, restrictedArea, bestElementPlaced);
+        new BoardWindow(circuitBoard, restrictedArea, batAlgorithm);
     }
 }

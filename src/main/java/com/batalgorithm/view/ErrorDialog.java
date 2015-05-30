@@ -6,11 +6,11 @@ import java.awt.*;
 /**
  * Диалоговое окно для вывода сообщений ошибках.
  */
-public class Error extends JDialog {
+public class ErrorDialog extends JDialog {
 
-    private Error thisError;
+    private ErrorDialog thisError;
 
-    public Error(JFrame owner, String message) throws HeadlessException {
+    public ErrorDialog(JFrame owner, String message) throws HeadlessException {
         super(owner, "Ошибка", true);
         thisError = this;
         setLayout(new BorderLayout());

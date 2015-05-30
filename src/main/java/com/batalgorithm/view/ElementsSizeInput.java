@@ -4,8 +4,6 @@ import com.batalgorithm.main.Element;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
@@ -38,11 +36,9 @@ public class ElementsSizeInput extends JDialog {
             JFormattedTextField bInput = new JFormattedTextField(numberFormat);
             bInput.setColumns(10);
 
-            if (elementList != null) {
-                Element element = elementList.get(i);
-                aInput.setText(String.valueOf(element.getWidth()));
-                bInput.setText(String.valueOf(element.getHeight()));
-            }
+            Element element = elementList.get(i);
+            aInput.setText(String.valueOf(element.getWidth()));
+            bInput.setText(String.valueOf(element.getHeight()));
 
             aInputList.add(aInput);
             bInputList.add(bInput);
@@ -69,7 +65,7 @@ public class ElementsSizeInput extends JDialog {
                 thisDialog.dispose();
 
             } catch (NumberFormatException e1) {
-                new Error(owner, "Неправильно задан один или более параметров!");
+                new ErrorDialog(owner, "Неправильно задан один или более параметров!");
             }
         });
 

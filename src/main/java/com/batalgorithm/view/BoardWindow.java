@@ -1,7 +1,7 @@
 package com.batalgorithm.view;
 
+import com.batalgorithm.main.BatAlgorithm;
 import com.batalgorithm.main.CircuitBoard;
-import com.batalgorithm.main.Element;
 import com.batalgorithm.main.RestrictedArea;
 
 import javax.swing.*;
@@ -12,43 +12,48 @@ import java.awt.*;
  */
 public class BoardWindow extends JFrame {
 
-    private static int ZOOM = 3;
+    private int zoom = 3;
     private static Label zoomLabel;
     private int width;
     private int height;
 
-    public BoardWindow(CircuitBoard circuitBoard, RestrictedArea restrictedArea, final java.util.List<Element>
-            elementList) {
+    public BoardWindow(CircuitBoard circuitBoard, RestrictedArea restrictedArea, BatAlgorithm batAlgorithm) {
         width = circuitBoard.getWidth();
         height = circuitBoard.getHeight();
-        setSize(ZOOM * width + 30, ZOOM * height + 100);
-        setResizable(true);
-        BoardPanel boardPanel = new BoardPanel(width, height, restrictedArea, elementList);
-        add(BorderLayout.CENTER, boardPanel);
-        zoomLabel = new Label("Zoom: x" + ZOOM);
+        setSize(zoom * width * 2 + 40, zoom * height + 150);
+        BoardPanel beforeBoardPanel = new BoardPanel(width, height, restrictedArea, batAlgorithm.getInitial());
+        beforeBoardPanel.setZoom(zoom);
+        BoardPanel afterBoardPanel = new BoardPanel(width, height, restrictedArea, batAlgorithm.getBest());
+        afterBoardPanel.setZoom(zoom);
+        add(BorderLayout.CENTER, afterBoardPanel);
+        zoomLabel = new Label("Zoom: x" + zoom);
         Button zoomPlus = new Button(" + ");
         Button zoomMinus = new Button(" - ");
         zoomPlus.addActionListener(e -> {
             if (e.getActionCommand().equals(" + ")) {
-                if (ZOOM < 10) {
-                    ZOOM++;
+                if (zoom < 10) {
+                    zoom++;
                 } else {
-                    ZOOM = 1;
+                    zoom = 1;
                 }
-                zoomLabel.setText("Zoom: x" + ZOOM);
-                setSize(ZOOM * width + 30, ZOOM * height + 100);
+                beforeBoardPanel.setZoom(zoom);
+                afterBoardPanel.setZoom(zoom);
+                zoomLabel.setText("Zoom: x" + zoom);
+                setSize(zoom * width + 30, zoom * height + 100);
                 repaint();
             }
         });
         zoomMinus.addActionListener(e -> {
             if (e.getActionCommand().equals(" - ")) {
-                if (ZOOM > 1) {
-                    ZOOM--;
+                if (zoom > 1) {
+                    zoom--;
                 } else {
-                    ZOOM = 1;
+                    zoom = 1;
                 }
-                zoomLabel.setText("Zoom: x" + ZOOM);
-                setSize(ZOOM * width + 30, ZOOM * height + 100);
+                beforeBoardPanel.setZoom(zoom);
+                afterBoardPanel.setZoom(zoom);
+                zoomLabel.setText("Zoom: x" + zoom);
+                setSize(zoom * width + 30, zoom * height + 100);
                 repaint();
             }
         });
@@ -56,54 +61,32 @@ public class BoardWindow extends JFrame {
         zoomPanel.add(zoomLabel);
         zoomPanel.add(zoomPlus);
         zoomPanel.add(zoomMinus);
+
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new GridLayout(2, 2));
+        JLabel beforeLabel = new JLabel("Перед размещением: ");
+        JLabel afterLabel = new JLabel("После размещения: ");
+        JLabel beforeL = new JLabel("L = " + batAlgorithm.getInitialMinLength());
+        JLabel afterL = new JLabel("L = " + batAlgorithm.getMinLength());
+        titlePanel.add(beforeLabel);
+        titlePanel.add(afterLabel);
+        titlePanel.add(beforeL);
+        titlePanel.add(afterL);
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
+        centerPanel.add(beforeBoardPanel);
+        centerPanel.add(afterBoardPanel);
+        add(BorderLayout.NORTH, titlePanel);
+        add(BorderLayout.CENTER, centerPanel);
         add(BorderLayout.SOUTH, zoomPanel);
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         setVisible(true);
     }
 
-    class BoardPanel extends JPanel {
-
-        private int width;
-        private int height;
-        private RestrictedArea restrictedArea;
-        private java.util.List<Element> elementList;
-
-        public BoardPanel(int width, int height, RestrictedArea restrictedArea, java.util.List<Element> elementList) {
-            this.width = width;
-            this.height = height;
-            this.restrictedArea = restrictedArea;
-            this.elementList = elementList;
-            setSize(ZOOM * width + 10, ZOOM * height + 10);
-            setVisible(true);
-        }
-
-        @Override
-        public void paint(Graphics g) {
-            int offsetX = 5;
-            int offsetY = 5;
-            g.setColor(Color.BLACK);
-            g.drawRect(offsetX, offsetY, ZOOM * width, ZOOM * height);
-            g.setColor(Color.RED);
-            int startX = offsetX + ZOOM * (restrictedArea.getMinX());
-            int startY = offsetY + ZOOM * (restrictedArea.getMinY());
-            g.fillRect(startX, startY, ZOOM * restrictedArea.getWidth(), ZOOM * restrictedArea.getHeight());
-            g.setColor(Color.BLACK);
-            g.drawRect(startX, startY, ZOOM * restrictedArea.getWidth(), ZOOM * restrictedArea.getHeight());
-            for (Element e : elementList) {
-                int startElementX = offsetX + ZOOM * (e.getMinX());
-                int startElementY = offsetY + ZOOM * (e.getMinY());
-                g.setColor(Color.GREEN);
-                g.fillRect(startElementX, startElementY, ZOOM * e.getWidth(), ZOOM * e.getHeight());
-                g.setColor(Color.BLACK);
-                g.drawRect(startElementX, startElementY, ZOOM * e.getWidth(), ZOOM * e.getHeight());
-            }
-            // После отрисовки всех элементов отрисовываем подписи к ним
-            for (Element e : elementList) {
-                g.drawString("#" + e.getNumber() + ", x=" + e.getCenterX() + ", y=" + e.getCenterY(),
-                        ZOOM * e.getCenterX(), ZOOM * (e.getCenterY()));
-            }
-            g.drawString("x=" + restrictedArea.getMinX() + ", y=" + restrictedArea.getMinY(), startX + ZOOM * 5,
-                    startY + ZOOM * 5);
-        }
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        setSize(zoom * width * 2 + 40, zoom * height + 150);
     }
 }

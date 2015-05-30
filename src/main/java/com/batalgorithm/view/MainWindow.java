@@ -29,10 +29,10 @@ public class MainWindow extends JFrame {
                 if (boardInfo.isValid() && algInfo.isValid()) {
                     runner.calculate(boardInfo, algInfo);
                 } else {
-                    new Error(mainWindow, "Введены неверные параметры! Проверьте введенную информацию и попробуйте снова.");
+                    new ErrorDialog(mainWindow, "Введены неверные параметры! Проверьте введенную информацию и попробуйте снова.");
                 }
             } catch (Exception exc) {
-                new Error(mainWindow, "Что-то не так.. Проверьте введенную информацию и попробуйте снова.");
+                new ErrorDialog(mainWindow, "Что-то не так.. Проверьте введенную информацию и попробуйте снова.");
             }
         });
 
@@ -65,7 +65,7 @@ public class MainWindow extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
-        setVisible(true);
         setResizable(false);
+        setVisible(true);
     }
 }

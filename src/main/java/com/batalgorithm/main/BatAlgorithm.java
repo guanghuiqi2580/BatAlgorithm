@@ -3,6 +3,7 @@ package com.batalgorithm.main;
 import Jama.Matrix;
 import com.batalgorithm.utils.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,9 +22,12 @@ public class BatAlgorithm {
     private List<Element> elementList;
     private int minDistance;
 
+    private List<Element> initial;
     private List<Element> best;
+    private double initialMinLength;
     private double minLength;
     private int iter;
+    private long executionTime;
 
     public BatAlgorithm(CircuitBoard circuitBoard, RestrictedArea restrictedArea, Matrix adjacencyMatrix, List<Element>
             elementList, int minDistance) {
@@ -70,9 +74,15 @@ public class BatAlgorithm {
         // Находим начальное лучшее решение
         Matrix min = MatlabSubstitute.min(solutionLength);
         minLength = getRow(min, 0).get(0, 0);
+        initialMinLength = minLength;
         Matrix I = getRow(min, 1);
         int bestIndex = (int) I.get(0, 0) - 1;
         best = solutions.get(bestIndex);
+        initial = new ArrayList<>(best.size());
+        for (Element e : best) {
+            Element element = new Element(e.getNumber(), e.getCenterX(), e.getCenterY(), e.getWidth(), e.getHeight());
+            initial.add(element);
+        }
 
         StringBuilder initialReport = new StringBuilder();
         initialReport.append("Initial solutions (Element number, X, Y): ").append(System.lineSeparator());
@@ -90,6 +100,7 @@ public class BatAlgorithm {
         // Начинаем итерации алгоритма (важная часть)
         Matrix Sx = new Matrix(n, d);
         Matrix Sy = new Matrix(n, d);
+        long startTime = System.currentTimeMillis();
         for (int t = 0; t < N_gen; t++) {
             // Цикл по всем летучим мышам / решениям
             for (int i = 0; i < n; i++) {
@@ -145,6 +156,10 @@ public class BatAlgorithm {
             }
             iter = iter + n;
         }
+        long stopTime = System.currentTimeMillis();
+        executionTime = stopTime - startTime;
+        SimpleDateFormat formating = new SimpleDateFormat("mm:ss:SSS");
+        LOG.info("Algorithm execution time: " + formating.format(executionTime));
     }
 
     private List<Element> convertToElementList(Matrix sx, Matrix sy, int i) {
@@ -303,12 +318,20 @@ public class BatAlgorithm {
         return minLength;
     }
 
+    public double getInitialMinLength() {
+        return initialMinLength;
+    }
+
     public int getIter() {
         return iter;
     }
 
     public List<Element> getBest() {
         return best;
+    }
+
+    public List<Element> getInitial() {
+        return initial;
     }
 
     private List<Element> randomPack(List<Element> elementList) {

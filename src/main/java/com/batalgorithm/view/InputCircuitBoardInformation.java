@@ -8,12 +8,15 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Окно, предназначенное для ввода информации об элементах, размерах платы, размерах запретной зоны и т.д.
  */
 public class InputCircuitBoardInformation extends JPanel {
+
+    private static final int DEFAULT_MATRIX_SIZE = 3;
 
     private JTextField inputCircuitSizeA;
     private JTextField inputCircuitSizeB;
@@ -28,6 +31,23 @@ public class InputCircuitBoardInformation extends JPanel {
     private java.util.List<Element> elementList;
 
     public InputCircuitBoardInformation(JFrame owner) {
+
+
+        elementList = new ArrayList<>();
+        for (int i = 0; i < DEFAULT_MATRIX_SIZE; i++) {
+            elementList.add(new Element(i, 0, 0, 10, 10));
+        }
+
+        adjMatrix = new Matrix(DEFAULT_MATRIX_SIZE, DEFAULT_MATRIX_SIZE);
+        for (int row = 0; row < DEFAULT_MATRIX_SIZE; row++) {
+            for (int col = 0; col < DEFAULT_MATRIX_SIZE; col++) {
+                if (row == col) {
+                    adjMatrix.set(row, col, 0);
+                } else {
+                    adjMatrix.set(row, col, 1);
+                }
+            }
+        }
 
         JPanel mainPanel = new JPanel();
         JLabel header = new JLabel("Информация об элементах и монтажной плате: ");
@@ -103,7 +123,7 @@ public class InputCircuitBoardInformation extends JPanel {
                     throw new NumberFormatException();
                 }
             } catch (NumberFormatException exception) {
-                new Error(owner, "Неправильно задан размер матрицы смежности!");
+                new ErrorDialog(owner, "Неправильно задан размер матрицы смежности!");
             }
         });
         inputAdjMatrixSizeInputPanel.add(inputAdjMatrixButton);
@@ -120,7 +140,7 @@ public class InputCircuitBoardInformation extends JPanel {
                     throw new NumberFormatException();
                 }
             } catch (NumberFormatException exception) {
-                new Error(owner, "Неправильно задан размер матрицы смежности!");
+                new ErrorDialog(owner, "Неправильно задан размер матрицы смежности!");
             }
         });
         inputSizeOfElementsPanel.add(inputSizeOfElementsButton);
@@ -148,7 +168,7 @@ public class InputCircuitBoardInformation extends JPanel {
         inputRestrictedAreaY.setText("33");
         inputRestrictedAreaA.setText("50");
         inputRestrictedAreaB.setText("50");
-        inputAdjMatrixSize.setText("3");
+        inputAdjMatrixSize.setText(String.valueOf(DEFAULT_MATRIX_SIZE));
         inputMinDistance.setText("5");
     }
 

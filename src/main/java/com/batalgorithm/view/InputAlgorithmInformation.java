@@ -41,8 +41,10 @@ public class InputAlgorithmInformation extends JPanel {
         nMainLabel.setAlignmentX(CENTER_ALIGNMENT);
         JPanel inputNPanel = new JPanel(new FlowLayout());
         JLabel nLabel = new JLabel("N: ");
+        inputNPanel.add(new JLabel("              "));
         inputNPanel.add(nLabel);
         inputNPanel.add(inputN);
+        inputNPanel.add(new JLabel("              "));
         inputNMainPanel.add(nMainLabel);
         inputNMainPanel.add(inputNPanel);
 
@@ -52,8 +54,10 @@ public class InputAlgorithmInformation extends JPanel {
         nGenMainLabel.setAlignmentX(CENTER_ALIGNMENT);
         JPanel inputNGenPanel = new JPanel(new FlowLayout());
         JLabel nGenLabel = new JLabel("N_gen: ");
+        inputNGenPanel.add(new JLabel("              "));
         inputNGenPanel.add(nGenLabel);
         inputNGenPanel.add(inputN_gen);
+        inputNGenPanel.add(new JLabel("                    "));
         inputNGenMainPanel.add(nGenMainLabel);
         inputNGenMainPanel.add(inputNGenPanel);
 

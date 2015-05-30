@@ -38,7 +38,7 @@ public class AdjacencyMatrixInput extends JDialog {
         }
 
         Matrix adjMatrix = boardInformation.getAdjMatrix();
-        if (adjMatrix != null && adjMatrix.getRowDimension() == matrixSize && adjMatrix.getColumnDimension() == matrixSize) {
+        if (adjMatrix.getRowDimension() == matrixSize && adjMatrix.getColumnDimension() == matrixSize) {
             for (int row = 0; row < matrixSize; row++) {
                 for (int col = 0; col < matrixSize; col++) {
                     for (InputField field : inputList) {
@@ -94,7 +94,7 @@ public class AdjacencyMatrixInput extends JDialog {
                 boardInformation.setAdjMatrix(newAdjMatrix);
                 thisDialog.dispose();
             } catch (NumberFormatException e1) {
-                new Error(owner, "Неправильно задан один или более параметров!");
+                new ErrorDialog(owner, "Неправильно задан один или более параметров!");
             }
         });
         setMatrixButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -155,16 +155,17 @@ public class AdjacencyMatrixInput extends JDialog {
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
-                    update();
                 }
 
                 @Override
                 public void changedUpdate(DocumentEvent e) {
-                    update();
                 }
 
                 public void update() {
-                    Runnable runnable = () -> listener.setText(thisField.getText());
+                    Runnable runnable = () -> {
+                        listener.setText("");
+                        listener.setText(thisField.getText());
+                    };
                     new Thread(runnable).start();
                 }
             });
