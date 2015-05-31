@@ -33,21 +33,21 @@ public class InputCircuitBoardInformation extends JPanel {
     public InputCircuitBoardInformation(JFrame owner) {
 
 
-        elementList = new ArrayList<>();
-        for (int i = 0; i < DEFAULT_MATRIX_SIZE; i++) {
-            elementList.add(new Element(i, 0, 0, 10, 10));
-        }
-
-        adjMatrix = new Matrix(DEFAULT_MATRIX_SIZE, DEFAULT_MATRIX_SIZE);
-        for (int row = 0; row < DEFAULT_MATRIX_SIZE; row++) {
-            for (int col = 0; col < DEFAULT_MATRIX_SIZE; col++) {
-                if (row == col) {
-                    adjMatrix.set(row, col, 0);
-                } else {
-                    adjMatrix.set(row, col, 1);
-                }
-            }
-        }
+//        elementList = new ArrayList<>();
+//        for (int i = 0; i < DEFAULT_MATRIX_SIZE; i++) {
+//            elementList.add(new Element(i, 0, 0, 10, 10));
+//        }
+//
+//        adjMatrix = new Matrix(DEFAULT_MATRIX_SIZE, DEFAULT_MATRIX_SIZE);
+//        for (int row = 0; row < DEFAULT_MATRIX_SIZE; row++) {
+//            for (int col = 0; col < DEFAULT_MATRIX_SIZE; col++) {
+//                if (row == col) {
+//                    adjMatrix.set(row, col, 0);
+//                } else {
+//                    adjMatrix.set(row, col, 1);
+//                }
+//            }
+//        }
 
         JPanel mainPanel = new JPanel();
         JLabel header = new JLabel("Информация об элементах и монтажной плате: ");

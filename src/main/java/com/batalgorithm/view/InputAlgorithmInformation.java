@@ -39,7 +39,7 @@ public class InputAlgorithmInformation extends JPanel {
         inputNMainPanel.setLayout(new BoxLayout(inputNMainPanel, BoxLayout.Y_AXIS));
         JLabel nMainLabel = new JLabel("Размер популяции");
         nMainLabel.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel inputNPanel = new JPanel(new FlowLayout());
+        JPanel inputNPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel nLabel = new JLabel("N: ");
         inputNPanel.add(new JLabel("              "));
         inputNPanel.add(nLabel);
@@ -52,7 +52,7 @@ public class InputAlgorithmInformation extends JPanel {
         inputNGenMainPanel.setLayout(new BoxLayout(inputNGenMainPanel, BoxLayout.Y_AXIS));
         JLabel nGenMainLabel = new JLabel("Количество поколений");
         nGenMainLabel.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel inputNGenPanel = new JPanel(new FlowLayout());
+        JPanel inputNGenPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel nGenLabel = new JLabel("N_gen: ");
         inputNGenPanel.add(new JLabel("              "));
         inputNGenPanel.add(nGenLabel);
@@ -65,10 +65,12 @@ public class InputAlgorithmInformation extends JPanel {
         inputAMainPanel.setLayout(new BoxLayout(inputAMainPanel, BoxLayout.Y_AXIS));
         JLabel aMainLabel = new JLabel("Громкость (в диапазоне от 0 до 1): ");
         aMainLabel.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel inputAPanel = new JPanel(new FlowLayout());
+        JPanel inputAPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel aLabel = new JLabel("A: ");
+        inputAPanel.add(new JLabel("              "));
         inputAPanel.add(aLabel);
         inputAPanel.add(inputA);
+        inputAPanel.add(new JLabel("                    "));
         inputAMainPanel.add(aMainLabel);
         inputAMainPanel.add(inputAPanel);
 
@@ -76,10 +78,12 @@ public class InputAlgorithmInformation extends JPanel {
         inputRMainPanel.setLayout(new BoxLayout(inputRMainPanel, BoxLayout.Y_AXIS));
         JLabel rMainLabel = new JLabel("Частота пульсации (в диапазоне от 0 до 1): ");
         rMainLabel.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel inputRPanel = new JPanel(new FlowLayout());
+        JPanel inputRPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel rLabel = new JLabel("r: ");
+        inputRPanel.add(new JLabel("                        "));
         inputRPanel.add(rLabel);
         inputRPanel.add(inputR);
+        inputRPanel.add(new JLabel("                    "));
         inputRMainPanel.add(rMainLabel);
         inputRMainPanel.add(inputRPanel);
 
@@ -87,10 +91,12 @@ public class InputAlgorithmInformation extends JPanel {
         inputQminMainPanel.setLayout(new BoxLayout(inputQminMainPanel, BoxLayout.Y_AXIS));
         JLabel QminMainLabel = new JLabel("Минимальная частота");
         QminMainLabel.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel inputQminPanel = new JPanel(new FlowLayout());
+        JPanel inputQminPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel QminLabel = new JLabel("Qmin: ");
+        inputQminPanel.add(new JLabel("       "));
         inputQminPanel.add(QminLabel);
         inputQminPanel.add(inputQmin);
+        inputQminPanel.add(new JLabel("                    "));
         inputQminMainPanel.add(QminMainLabel);
         inputQminMainPanel.add(inputQminPanel);
 
@@ -98,10 +104,12 @@ public class InputAlgorithmInformation extends JPanel {
         inputQmaxMainPanel.setLayout(new BoxLayout(inputQmaxMainPanel, BoxLayout.Y_AXIS));
         JLabel QmaxMainLabel = new JLabel("Максимальная частота");
         QmaxMainLabel.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel inputQmaxPanel = new JPanel(new FlowLayout());
+        JPanel inputQmaxPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel QmaxLabel = new JLabel("Qmax: ");
+        inputQmaxPanel.add(new JLabel("              "));
         inputQmaxPanel.add(QmaxLabel);
         inputQmaxPanel.add(inputQmax);
+        inputQmaxPanel.add(new JLabel("                    "));
         inputQmaxMainPanel.add(QmaxMainLabel);
         inputQmaxMainPanel.add(inputQmaxPanel);
 
@@ -109,8 +117,9 @@ public class InputAlgorithmInformation extends JPanel {
         inputMaxStepMainPanel.setLayout(new BoxLayout(inputMaxStepMainPanel, BoxLayout.Y_AXIS));
         JLabel maxStepMainLabel = new JLabel("Максимальный размер шага при поиске");
         maxStepMainLabel.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel inputMaxStepPanel = new JPanel(new FlowLayout());
+        JPanel inputMaxStepPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel maxStepLabel = new JLabel("maxStep: ");
+        inputMaxStepPanel.add(new JLabel(""));
         inputMaxStepPanel.add(maxStepLabel);
         inputMaxStepPanel.add(inputMaxStep);
         inputMaxStepMainPanel.add(maxStepMainLabel);

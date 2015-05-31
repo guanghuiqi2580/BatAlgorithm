@@ -38,7 +38,8 @@ public class AdjacencyMatrixInput extends JDialog {
         }
 
         Matrix adjMatrix = boardInformation.getAdjMatrix();
-        if (adjMatrix.getRowDimension() == matrixSize && adjMatrix.getColumnDimension() == matrixSize) {
+        if (adjMatrix != null && adjMatrix.getRowDimension() == matrixSize
+                && adjMatrix.getColumnDimension() == matrixSize) {
             for (int row = 0; row < matrixSize; row++) {
                 for (int col = 0; col < matrixSize; col++) {
                     for (InputField field : inputList) {

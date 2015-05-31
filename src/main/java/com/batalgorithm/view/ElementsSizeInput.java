@@ -36,9 +36,11 @@ public class ElementsSizeInput extends JDialog {
             JFormattedTextField bInput = new JFormattedTextField(numberFormat);
             bInput.setColumns(10);
 
-            Element element = elementList.get(i);
-            aInput.setText(String.valueOf(element.getWidth()));
-            bInput.setText(String.valueOf(element.getHeight()));
+            if (elementList != null) {
+                Element element = elementList.get(i);
+                aInput.setText(String.valueOf(element.getWidth()));
+                bInput.setText(String.valueOf(element.getHeight()));
+            }
 
             aInputList.add(aInput);
             bInputList.add(bInput);

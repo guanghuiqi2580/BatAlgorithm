@@ -64,7 +64,7 @@ public class BoardWindow extends JFrame {
 
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new GridLayout(2, 2));
-        JLabel beforeLabel = new JLabel("Перед размещением: ");
+        JLabel beforeLabel = new JLabel("До выполнения алгоритма: ");
         JLabel afterLabel = new JLabel("После размещения: ");
         JLabel beforeL = new JLabel("L = " + batAlgorithm.getInitialMinLength());
         JLabel afterL = new JLabel("L = " + batAlgorithm.getMinLength());
