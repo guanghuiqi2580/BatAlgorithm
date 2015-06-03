@@ -45,7 +45,7 @@ public class ElementsSizeInput extends JDialog {
             aInputList.add(aInput);
             bInputList.add(bInput);
 
-            rowPanel.add(new JLabel("Елемент № " + (i + 1) + " "));
+            rowPanel.add(new JLabel("Элемент № " + (i + 1) + " "));
             rowPanel.add(new JLabel("a: "));
             rowPanel.add(aInput);
             rowPanel.add(new JLabel("b: "));

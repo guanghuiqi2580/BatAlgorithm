@@ -5,6 +5,7 @@ import com.batalgorithm.main.AlgorithmInformation;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
@@ -153,8 +154,8 @@ public class InputAlgorithmInformation extends JPanel {
         numberInstance.setGroupingUsed(false);
         inputN = new JFormattedTextField(numberInstance);
         inputN_gen = new JFormattedTextField(numberInstance);
-        inputA = new JFormattedTextField(numberInstance);
-        inputR = new JFormattedTextField(numberInstance);
+        inputA = new JTextField();
+        inputR = new JTextField();
         inputQmin = new JFormattedTextField(numberInstance);
         inputQmax = new JFormattedTextField(numberInstance);
         inputMaxStep = new JFormattedTextField(numberInstance);
