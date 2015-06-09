@@ -130,7 +130,11 @@ public class BatAlgorithm {
                 // Обновить, если решение лучше или не слишком громко
                 if ((Fnew <= solutionLength.get(0, i)) && (MatlabSubstitute.rand() < A)) {
                     setNewSolution(solutions, getRow(Sx, i), getRow(Sy, i), i);
+                    Fnew = calculateLength(elements);
                 }
+                StringBuilder report = new StringBuilder();
+                report.append(System.lineSeparator());
+                report.append("Current min length: ").append(calculateLength(elements)).append(System.lineSeparator());
                 // Обновим текущее лучшее решение
                 boolean foundBest = false;
                 if (Fnew < minLength) {
@@ -138,7 +142,6 @@ public class BatAlgorithm {
                     minLength = Fnew;
                     foundBest = true;
                 }
-                StringBuilder report = new StringBuilder();
                 report.append("Generation number: ").append(t).append(System.lineSeparator());
                 report.append("Solution (element) number: ").append(i).append(System.lineSeparator());
                 report.append("Velocity X: ").append(MatrixHelper.toIntString(vXRow)).append(System.lineSeparator());
@@ -149,7 +152,7 @@ public class BatAlgorithm {
                 if (foundBest) {
                     report.append("New best solution: ").append(MatrixHelper.coordinatesToString(getBest())).
                             append(System.lineSeparator());
-                    report.append("New min length: ").append(minLength).append(System.lineSeparator());
+                    report.append("New best min length: ").append(minLength).append(System.lineSeparator());
                 }
                 report.append(PrintHelper.getDelimiter());
                 LOG.info(report.toString());
@@ -159,6 +162,7 @@ public class BatAlgorithm {
         long stopTime = System.currentTimeMillis();
         executionTime = stopTime - startTime;
         SimpleDateFormat formating = new SimpleDateFormat("mm:ss:SSS");
+        LOG.info("Best min length: " + minLength);
         LOG.info("Algorithm execution time: " + formating.format(executionTime));
     }
 

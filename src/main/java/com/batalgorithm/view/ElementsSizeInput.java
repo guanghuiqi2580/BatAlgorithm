@@ -3,6 +3,7 @@ package com.batalgorithm.view;
 import com.batalgorithm.main.Element;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -77,10 +78,17 @@ public class ElementsSizeInput extends JDialog {
         dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
 
         dialogPanel.add(elementSizePanel);
-        dialogPanel.add(setElementSizeButton);
+//        dialogPanel.add(setElementSizeButton);
 
         setLayout(new BorderLayout());
-        add(BorderLayout.CENTER, dialogPanel);
+
+        JScrollPane scrollPane = new JScrollPane(dialogPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        setLayout(new BorderLayout());
+        add(BorderLayout.CENTER, scrollPane);
+        add(BorderLayout.SOUTH, setElementSizeButton);
 
         setSize(WIDTH, HEIGHT);
         int x = owner.getX() + owner.getWidth() / 2 - WIDTH / 2;
@@ -90,5 +98,10 @@ public class ElementsSizeInput extends JDialog {
         pack();
         setVisible(true);
         setResizable(false);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(400, 500);
     }
 }

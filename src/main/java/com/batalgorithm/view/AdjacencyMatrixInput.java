@@ -14,19 +14,24 @@ import java.util.ArrayList;
  */
 public class AdjacencyMatrixInput extends JDialog {
 
+    private java.util.List<InputField> inputList;
+    private int matrixSize;
+
     public AdjacencyMatrixInput(JFrame owner, int matrixSize, InputCircuitBoardInformation boardInformation)
             throws HeadlessException {
         super(owner, "Adjacency matrix input", true);
 
-        JPanel matrixPanel = new JPanel(new GridLayout(matrixSize, matrixSize, 5, 5));
-        java.util.List<InputField> inputList = new ArrayList<>();
+        this.matrixSize = matrixSize;
 
-        NumberFormat numberFormat = NumberFormat.getNumberInstance();
-        numberFormat.setGroupingUsed(false);
+        JPanel matrixPanel = new JPanel(new GridLayout(matrixSize, matrixSize, 5, 5));
+        inputList = new ArrayList<>();
+
+//        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+//        numberFormat.setGroupingUsed(false);
 
         for (int row = 0; row < matrixSize; row++) {
             for (int col = 0; col < matrixSize; col++) {
-                InputField inputField = new InputField(row, col, numberFormat);
+                InputField inputField = new InputField(row, col);
                 if (row == col) {
                     inputField.setEditable(false);
                     inputField.setText("0");
@@ -100,22 +105,50 @@ public class AdjacencyMatrixInput extends JDialog {
         });
         setMatrixButton.setAlignmentX(CENTER_ALIGNMENT);
 
+        JButton setRandomValueButton = new JButton("Заполнить случайными значениями");
+        setRandomValueButton.addActionListener(e -> {
+            Runnable runnable = () -> {
+                for (InputField inputField : inputList) {
+                    int row = inputField.getRow();
+                    int col = inputField.getCol();
+                    if (col > row) {
+                        inputField.setText(Integer.toString((int) (Math.random() * 6)));
+                    }
+                }
+            };
+            new Thread(runnable).start();
+        });
+        setRandomValueButton.setAlignmentX(CENTER_ALIGNMENT);
+
         JPanel dialogPanel = new JPanel();
         dialogPanel.setLayout(new BoxLayout(dialogPanel, BoxLayout.Y_AXIS));
 
         dialogPanel.add(matrixPanel);
-        dialogPanel.add(setMatrixButton);
+
+        JScrollPane scrollPane = new JScrollPane(dialogPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         setLayout(new BorderLayout());
-        add(BorderLayout.CENTER, dialogPanel);
 
-        int x = owner.getX() + owner.getWidth() / 2 - getWidth() / 2;
-        int y = owner.getY() + owner.getHeight() / 2 - getHeight() / 2;
+        add(BorderLayout.CENTER, scrollPane);
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(setMatrixButton);
+        buttonPanel.add(setRandomValueButton);
+        add(BorderLayout.SOUTH, buttonPanel);
+
+        int x = owner.getX() + owner.getWidth() / 2 - 400 / 2;
+        int y = owner.getY() + owner.getHeight() / 2 - 400 / 2;
         setLocation(x, y);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         pack();
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(600, 600);
     }
 
     private class InputField extends JFormattedTextField {
@@ -123,8 +156,8 @@ public class AdjacencyMatrixInput extends JDialog {
         private int row;
         private int col;
 
-        public InputField(int row, int col, NumberFormat numberFormat) {
-            super(numberFormat);
+        public InputField(int row, int col) {
+//            super(numberFormat);
             this.setColumns(5);
             this.row = row;
             this.col = col;
